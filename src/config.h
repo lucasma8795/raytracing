@@ -16,8 +16,9 @@ const int VER_PATCH = 0;
 const std::string WINDOW_TITLE = "Raytracing";
 
 // Width and height of the window.
-const int WINDOW_WIDTH  = 900; // 3024;
-const int WINDOW_HEIGHT = 600; // 1984;
+const int WINDOW_WIDTH   = 900; // 3024;
+const int WINDOW_HEIGHT  = 600; // 1984;
+const float ASPECT_RATIO = static_cast<float>(WINDOW_WIDTH) / WINDOW_HEIGHT;
 
 // Number of pixels.
 const int NUM_PIXELS = WINDOW_WIDTH * WINDOW_HEIGHT;

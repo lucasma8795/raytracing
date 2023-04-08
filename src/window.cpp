@@ -3,6 +3,7 @@
 #include "config.h"
 #include "image.h"
 #include "utils.h"
+#include "scenes/test_scene.h"
 
 #include <cstdint>
 #include <iostream>
@@ -20,6 +21,9 @@ Window::Window() noexcept
 {
     // Initialize image buffer.
     m_image = std::make_unique<Image>(WINDOW_WIDTH, WINDOW_HEIGHT);
+
+    // Scene selection.
+    m_scene = testScene();
 }
 
 
@@ -44,7 +48,11 @@ void Window::init()
     m_renderer = SDL_CreateRenderer(m_window, -1, SDL_RENDERER_ACCELERATED);
 
     // Create streaming texture for copying to renderer.
-    m_buffer = SDL_CreateTexture(m_renderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_STREAMING, WINDOW_WIDTH, WINDOW_HEIGHT);
+    m_buffer = SDL_CreateTexture(
+        m_renderer,
+        SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_STREAMING,
+        WINDOW_WIDTH, WINDOW_HEIGHT
+    );
 }
 
 
@@ -75,13 +83,14 @@ void Window::render()
     uint64_t start = SDL_GetPerformanceCounter();
 
     // Loop over each pixel
-    #pragma omp parallel for num_threads(10)
-    for (int x = 0; x < WINDOW_WIDTH; ++x)
+    // #pragma omp parallel for num_threads(10)
+    for (int y = 0; y < WINDOW_HEIGHT; ++y)
     {
-        for (int y = 0; y < WINDOW_HEIGHT; ++y)
+        for (int x = 0; x < WINDOW_WIDTH; ++x)
         {
             // Ray pointing from camera origin to screen coordinates.
             Ray cameraRay = m_camera.getRay(x, y);
+
             // Trace ray colour.
             m_image->set(x, y, m_scene.raytrace(cameraRay));
         }
@@ -112,6 +121,7 @@ void Window::display()
             glm::vec3 colorRGB = m_image->get(x, y) * 255.9999f;
 
             // quantize [0, 1) to [0, 255]
+            // also divide the color by the number of samples and gamma-correct for gamma=2.0.
             *base++ = SDL_ALPHA_OPAQUE;
             *base++ = static_cast<uint8_t>(colorRGB.z);
             *base++ = static_cast<uint8_t>(colorRGB.y);

@@ -3,6 +3,8 @@
 
 #include "../material.h"
 
+#include <glm/glm.hpp>
+
 
 namespace Raytracer
 {
@@ -11,14 +13,16 @@ namespace Raytracer
 class Solid: public Material
 {
 public:
-    // Always absorbs all light rays and does not scatter.
+    // Create a solid material.
+    explicit Solid(glm::vec3 albedo) noexcept;
+
+    // Always does not scatter.
     virtual bool scatter() const override;
 
 
 private:
-
-
-
+    // Characteristic colour of the solid material.
+    glm::vec3 m_albedo;
 };
 
 

@@ -8,6 +8,7 @@ namespace Raytracer
 {
 
 
+// Simple implementation of a light ray.
 class Ray
 {
 public:
@@ -15,7 +16,11 @@ public:
     explicit Ray(glm::vec3 origin, glm::vec3 dir) noexcept;
 
     // Returns origin + t * dir.
-    glm::vec3 at(float t);
+    glm::vec3 at(float t) const;
+
+    // Getters for origin and direction.
+    glm::vec3 origin() const;
+    glm::vec3 dir() const;
 
 
 private:
@@ -24,9 +29,21 @@ private:
 };
 
 
-inline glm::vec3 Ray::at(float t)
+inline glm::vec3 Ray::at(float t) const
 {
     return m_orig + t * m_dir;
+}
+
+
+inline glm::vec3 Ray::origin() const
+{
+    return m_orig;
+}
+
+
+inline glm::vec3 Ray::dir() const
+{
+    return m_dir;
 }
 
 

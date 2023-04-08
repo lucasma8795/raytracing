@@ -38,7 +38,7 @@ LDFLAGS = -flto=auto -pthread
 -include $(OBJECTS:.o=.d)
 
 # compiler flags
-CXXFLAGS  = -O3 -Wall -Wextra -Wpedantic -Werror
+CXXFLAGS  = -Ofast -Wall -Wextra -Wpedantic -Werror
 CXXFLAGS += -std=c++23 -march=native
 CXXFLAGS += -flto=auto -fopenmp # -pthread
 CXXFLAGS += -fno-exceptions # -DNDEBUG

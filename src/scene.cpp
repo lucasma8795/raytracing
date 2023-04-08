@@ -11,25 +11,27 @@ namespace Raytracer
 {
 
 
-glm::vec3 Scene::raytrace(const Ray& ray)
+glm::vec3 Scene::raytrace(const Ray& ray) const
 {
-    // return glm::ballRand(1.0f);
-    return Colours::SEA_BLUE;
+    return raytrace(ray, MAX_DEPTH);
 }
 
 
-void Scene::add(std::shared_ptr<Object> object)
+glm::vec3 Scene::raytrace(const Ray& ray, int depth) const
 {
-    m_objects.push_back(object);
-}
+    if (depth == 0)
+        return Colours::BLACK;
 
+    for (auto object: m_objects)
+    {
+        if (object->hit(ray, 0.001, std::numeric_limits<float>::max()))
+        {
+            return Colours::RED;
+        }
+    }
 
-template<typename... Args>
-void Scene::add(std::shared_ptr<Object> object, Args... args)
-{
-    // Recursively push_back() to object vector.
-    m_objects.push_back(object);
-    add(args...);
+    // return colour of the sky
+    return Colours::SKY_BLUE;
 }
 
 
