@@ -50,6 +50,8 @@ private:
     
     std::unique_ptr<Image> m_image; // Image buffer.
 
+    SDL_Texture* m_buffer;
+
     SDL_Event     m_event;    // Event emitted by SDL2.
     SDL_Window*   m_window;   // Instance of SDL2 window.
     SDL_Renderer* m_renderer; // Instance of SDL2 renderer.

@@ -4,3 +4,5 @@ misc
 
 *.o
 *.d
+
+raytrace

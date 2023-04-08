@@ -30,18 +30,23 @@ public:
 
 
 private:
+    void computeRayDirs(); // Compute cached ray directions.
+
+
+private:
     glm::vec3 m_origin; // Origin of the camera.
 
-    glm::vec3 m_direction;      // Direction that the camera is pointing at.
-    glm::vec3 m_upDirection;    // Up direction relative to camera position.
-    glm::vec3 m_rightDirection; // Right direction relative to camera position.
+    glm::vec3 m_forwardDirection; // Direction that the camera is pointing at.
+    glm::vec3 m_rightDirection;   // Right direction relative to camera position.
 
-    float m_FOV; // Field of view.
+    static constexpr glm::vec3 UP_DIRECTION{0.0f, 1.0f, 0.0f}; // Fixed up direction. (i.e.: no tilting)
+
+    static constexpr float m_FOV = 90.0f; // Field of view.
 
     float m_nearClip; // Near clip plane.
     float m_farClip;  // Far clip plane.
 
-    std::unique_ptr<glm::vec3[]> m_rays; // Cached ray directions for each pixel.
+    std::unique_ptr<glm::vec3[]> m_rayDirs; // Cached ray directions for each pixel.
 };
 
 

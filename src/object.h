@@ -6,8 +6,6 @@
 
 #include <memory>
 
-#include <glm/glm.hpp>
-
 
 namespace Raytracer
 {
@@ -17,11 +15,11 @@ namespace Raytracer
 class Object
 {
 public:
-    // Whether a ray intersects an object.
+    // Whether the given ray intersects us.
     virtual bool hit(const Ray& ray, float tMin, float tMax) const = 0;
 
 
-private:
+protected:
     // Material to use for the object.
     std::shared_ptr<Material> m_material;
 };

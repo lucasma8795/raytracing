@@ -4,6 +4,7 @@
 #include "image.h"
 #include "utils.h"
 
+#include <cstdint>
 #include <iostream>
 
 #include <SDL2/SDL.h>
@@ -41,6 +42,9 @@ void Window::init()
         0
     );
     m_renderer = SDL_CreateRenderer(m_window, -1, SDL_RENDERER_ACCELERATED);
+
+    // Create streaming texture for copying to renderer.
+    m_buffer = SDL_CreateTexture(m_renderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_STREAMING, WINDOW_WIDTH, WINDOW_HEIGHT);
 }
 
 
@@ -86,30 +90,43 @@ void Window::render()
     uint64_t end = SDL_GetPerformanceCounter();
 
     float elapsed = (end - start) / static_cast<float>(SDL_GetPerformanceFrequency());
-    std::cout << "frame time: " << elapsed * 1000.0f << "ms" << std::endl;
+    std::cout << "render time: " << elapsed * 1000.0f << "ms    ";
 }
 
 
 void Window::display()
 {
-    // Loop over each pixel
-    for (int x = 0; x < WINDOW_WIDTH; ++x)
-    {
-        for (int y = 0; y < WINDOW_HEIGHT; ++y)
-        {
-            // quantize [0, 1) to [0, 255]
-            glm::vec3 colorRGB = m_image->get(x, y) * 255.999f;
-            uint8_t r = static_cast<uint8_t>(colorRGB.x);
-            uint8_t g = static_cast<uint8_t>(colorRGB.y);
-            uint8_t b = static_cast<uint8_t>(colorRGB.z);
+    uint64_t start = SDL_GetPerformanceCounter();
 
-            // set new pixel colour
-            SDL_SetRenderDrawColor(m_renderer, r, g, b, SDL_ALPHA_OPAQUE);
-            SDL_RenderDrawPoint(m_renderer, x, y);
+    void* pixels;
+    int pitch;
+
+    SDL_LockTexture(m_buffer, NULL, &pixels, &pitch);
+
+    // Loop over each pixel
+    for (int y = 0; y < WINDOW_HEIGHT; ++y)
+    {
+        for (int x = 0; x < WINDOW_WIDTH; ++x)
+        {
+            uint8_t* base = static_cast<uint8_t*>(pixels) + (y * WINDOW_WIDTH + x) * 4;
+            glm::vec3 colorRGB = m_image->get(x, y) * 255.9999f;
+
+            // quantize [0, 1) to [0, 255]
+            *base++ = SDL_ALPHA_OPAQUE;
+            *base++ = static_cast<uint8_t>(colorRGB.z);
+            *base++ = static_cast<uint8_t>(colorRGB.y);
+            *base++ = static_cast<uint8_t>(colorRGB.x);
         }
     }
 
+    SDL_UnlockTexture(m_buffer);
+    SDL_RenderCopy(m_renderer, m_buffer, NULL, NULL);
     SDL_RenderPresent(m_renderer);
+
+    uint64_t end = SDL_GetPerformanceCounter();
+
+    float elapsed = (end - start) / static_cast<float>(SDL_GetPerformanceFrequency());
+    std::cout << "display time: " << elapsed * 1000.0f << "ms" << std::endl;
 }
 
 
