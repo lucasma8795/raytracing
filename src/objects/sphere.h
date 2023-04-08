@@ -3,6 +3,7 @@
 
 #include "../material.h"
 #include "../object.h"
+#include "../types.h"
 
 #include <glm/glm.hpp>
 
@@ -18,7 +19,7 @@ public:
     explicit Sphere(glm::vec3 centre, float radius, std::shared_ptr<Material> material) noexcept;
 
     // Whether the given ray intersects us.
-    bool hit(const Ray& ray, float t_min, float t_max) const override;
+    bool hit(const Ray& ray, float t_min, float t_max, HitPayload& payload) const override;
 
 
 private:

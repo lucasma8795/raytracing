@@ -3,6 +3,7 @@
 
 #include "material.h"
 #include "ray.h"
+#include "types.h"
 
 #include <memory>
 
@@ -16,7 +17,7 @@ class Object
 {
 public:
     // Whether the given ray intersects us.
-    virtual bool hit(const Ray& ray, float tMin, float tMax) const = 0;
+    virtual bool hit(const Ray& ray, float t_min, float t_max, HitPayload& payload) const = 0;
 
 
 protected:

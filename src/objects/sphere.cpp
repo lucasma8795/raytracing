@@ -1,5 +1,7 @@
 #include "sphere.h"
 
+#include "../types.h"
+
 #include <iostream>
 #include <memory>
 
@@ -17,7 +19,7 @@ Sphere::Sphere(glm::vec3 centre, float radius, std::shared_ptr<Material> materia
 }
 
 
-bool Sphere::hit(const Ray& ray, float t_min, float t_max) const
+bool Sphere::hit(const Ray& ray, float t_min, float t_max, HitPayload& payload) const
 {
     glm::vec3 oc = ray.origin() - m_centre;
 
@@ -30,8 +32,9 @@ bool Sphere::hit(const Ray& ray, float t_min, float t_max) const
     if (discriminant < 0)
         return false; // no real roots -> no intersection
 
-    
-    
+    payload.t = (-half_b - glm::sqrt(discriminant)) / a;
+    payload.P = ray.at(payload.t);
+    payload.N = (payload.P - m_centre) / m_radius;
 
     return true;
 }
