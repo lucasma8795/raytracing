@@ -1,5 +1,5 @@
-#ifndef SOLID_H__BSjpudQs3F
-#define SOLID_H__BSjpudQs3F
+#ifndef MAT_SOLID_H__BSjpudQs3F
+#define MAT_SOLID_H__BSjpudQs3F
 
 #include "../material.h"
 
@@ -17,7 +17,12 @@ public:
     explicit Solid(glm::vec3 albedo) noexcept;
 
     // Always does not scatter.
-    virtual bool scatter() const override;
+    virtual bool scatter(
+        const Ray& incident, const HitPayload& payload, glm::vec3& attenuation, Ray& scatter
+    ) const override;
+
+    // Always emits its characteristic colour.
+    virtual glm::vec3 emitted(const glm::vec3& normal) const override;
 
 
 private:

@@ -44,11 +44,12 @@ void Camera::computeRayDirs()
     {
         for (int x = 0; x < WINDOW_WIDTH; ++x)
         {
-            glm::vec3* dir = m_rayDirs.get() + y * WINDOW_WIDTH + x;
+            glm::vec3 dir;
+            dir.x = -ASPECT_RATIO + ASPECT_RATIO * 2 * (x / static_cast<float>(WINDOW_WIDTH));
+            dir.y = -1.0f + 2.0f * (y / static_cast<float>(WINDOW_HEIGHT));
+            dir.z = 1.0f;
             
-            dir->x = -ASPECT_RATIO + ASPECT_RATIO * 2 * (x / static_cast<float>(WINDOW_WIDTH));
-            dir->y = -1.0f + 2.0f * (y / static_cast<float>(WINDOW_HEIGHT));
-            dir->z = 1.0f;
+            m_rayDirs[y * WINDOW_WIDTH + x] = glm::normalize(dir);
         }
     }
 }

@@ -30,10 +30,7 @@ public:
 private:
     std::vector<std::shared_ptr<Object>> m_objects; // Vector of object pointers to render.
 
-    static constexpr int MAX_DEPTH = 1; // Maximum number of times a ray can bounce.
-
-    // static constexpr int SAMPLES_PER_PIXEL = 1; // Number of samples to take per pixel.
-    // static constexpr float SAMPLES_PER_PIXEL_INV = 1.0f / SAMPLES_PER_PIXEL;
+    static constexpr int MAX_DEPTH = 2; // Maximum number of times a ray can bounce.
 };
 
 

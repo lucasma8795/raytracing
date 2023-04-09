@@ -2,7 +2,6 @@
 
 #include "../types.h"
 
-#include <iostream>
 #include <memory>
 
 #include <glm/gtx/norm.hpp>
@@ -23,18 +22,27 @@ bool Sphere::hit(const Ray& ray, float t_min, float t_max, HitPayload& payload) 
 {
     glm::vec3 oc = ray.origin() - m_centre;
 
-    // Modified quadratic equation to check if there is an intersection.
+    // modified quadratic equation to check if there is an intersection
     float a            = glm::length2(ray.dir());
     float half_b       = glm::dot(oc, ray.dir());
     float c            = glm::length2(oc) - m_radius * m_radius;
     float discriminant = half_b * half_b - a * c;
 
-    if (discriminant < 0)
-        return false; // no real roots -> no intersection
+    if (discriminant < 0) return false; // no real roots -> no intersection
 
+    // update collision payload information
     payload.t = (-half_b - glm::sqrt(discriminant)) / a;
-    payload.P = ray.at(payload.t);
-    payload.N = (payload.P - m_centre) / m_radius;
+
+    if (payload.t < t_min || payload.t > t_max)
+        return false; // outside of requested t range
+
+    payload.point = ray.at(payload.t);
+    payload.material = m_material;
+    payload.normal = (payload.point - m_centre) / m_radius;
+
+    // glm::vec3 outwardNormal = (payload.point - m_centre) / m_radius;
+    // bool frontFace = glm::dot(ray.dir(), outwardNormal);
+    // payload.normal = frontFace ? outwardNormal : -outwardNormal;
 
     return true;
 }

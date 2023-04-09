@@ -40,7 +40,7 @@ void Window::init()
     
     // Create window and renderer.
     m_window = SDL_CreateWindow(
-        WINDOW_TITLE.data(),
+        WINDOW_TITLE.c_str(),
         SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
         WINDOW_WIDTH, WINDOW_HEIGHT,
         0
@@ -117,15 +117,19 @@ void Window::display()
     {
         for (int x = 0; x < WINDOW_WIDTH; ++x)
         {
+            // pointer to pixel in SDL texture
             uint8_t* base = static_cast<uint8_t*>(pixels) + (y * WINDOW_WIDTH + x) * 4;
-            glm::vec3 colorRGB = m_image->get(x, y) * 255.9999f;
 
             // quantize [0, 1) to [0, 255]
-            // also divide the color by the number of samples and gamma-correct for gamma=2.0.
-            *base++ = SDL_ALPHA_OPAQUE;
-            *base++ = static_cast<uint8_t>(colorRGB.z);
-            *base++ = static_cast<uint8_t>(colorRGB.y);
-            *base++ = static_cast<uint8_t>(colorRGB.x);
+            glm::vec3 colorRGB = glm::clamp(m_image->get(x, y), 0.0f, 0.9999f) * 256.0f;
+
+            // TODO: divide the color by the number of samples and gamma-correct for gamma=2.0.
+
+            // RGBA8888 format
+            *base++ = SDL_ALPHA_OPAQUE;                 // A, 8 bits
+            *base++ = static_cast<uint8_t>(colorRGB.z); // B, 8 bits
+            *base++ = static_cast<uint8_t>(colorRGB.y); // G, 8 bits
+            *base++ = static_cast<uint8_t>(colorRGB.x); // R, 8 bits
         }
     }
 

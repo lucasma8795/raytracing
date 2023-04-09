@@ -12,9 +12,16 @@ Solid::Solid(glm::vec3 albedo) noexcept
 {}
 
 
-bool Solid::scatter() const
-{
+bool Solid::scatter(
+    const Ray& incident, const HitPayload& payload, glm::vec3& attenuation, Ray& scatter
+) const {
     return false;
+}
+
+
+glm::vec3 Solid::emitted(const glm::vec3& normal) const
+{
+    return m_albedo;
 }
 
 
