@@ -2,6 +2,7 @@
 #define MAT_SURFACE_NORMAL_H__OR87Xo6Uhh
 
 #include "../material.h"
+#include "../types.h"
 
 #include <glm/glm.hpp>
 
@@ -11,6 +12,7 @@ namespace Raytracer
 {
 
 
+// A surface with colouring based on its surface normal.
 class SurfaceNormal: public Material
 {
 public:

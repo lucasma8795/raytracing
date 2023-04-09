@@ -1,5 +1,7 @@
 #include "metal.h"
 
+#include "../types.h"
+
 #include <glm/glm.hpp>
 #include <glm/gtc/random.hpp>
 
@@ -16,8 +18,10 @@ Metal::Metal(glm::vec3 albedo, float fuzz) noexcept
 bool Metal::scatter(
     const Ray& incident, const HitPayload& payload, glm::vec3& attenuation, Ray& scatter
 ) const {
+    // reflection direction
     glm::vec3 reflectDir = glm::reflect(incident.dir(), payload.normal);
 
+    // add fuzz to the metal surface
     if (m_fuzz)
         reflectDir += m_fuzz * glm::ballRand(1.0f);
 
@@ -25,8 +29,7 @@ bool Metal::scatter(
     scatter = Ray{payload.point, reflectDir};
 
     // are we scattering below the surface?
-    return true;
-    // return glm::dot(scatter.dir(), payload.normal) > 0;
+    return glm::dot(scatter.dir(), payload.normal) > 0;
 }
 
 

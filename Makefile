@@ -58,4 +58,7 @@ $(EXEC_FILE): $(OBJECTS)
 # clean up object files & executables
 clean:
 	rm -rf src/*.o src/*.d
+	rm -rf src/materials/*.o src/materials/*.d
+	rm -rf src/objects/*.o src/objects/*.d
+	rm -rf src/scenes/*.o src/scenes/*.d
 	rm -f $(EXEC_FILE)

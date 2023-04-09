@@ -28,6 +28,9 @@ public:
 
     // Get pixel color at a given position.
     glm::vec3 get(int x, int y);
+
+    // Add to pixel color at a given position.
+    void add(int x, int y, glm::vec3 color);
     
     // Set pixel color at a given position.
     void set(int x, int y, glm::vec3 color);
@@ -59,7 +62,19 @@ inline glm::vec3 Image::get(int x, int y)
 
 inline void Image::set(int x, int y, glm::vec3 color)
 {
+    // Bounds checking
+    assert(x >= 0 && x < m_width && y >= 0 && y < m_height);
+    
     m_pixels[y * m_width + x] = color;
+}
+
+
+inline void Image::add(int x, int y, glm::vec3 color)
+{
+    // Bounds checking
+    assert(x >= 0 && x < m_width && y >= 0 && y < m_height);
+    
+    m_pixels[y * m_width + x] += color;
 }
 
 

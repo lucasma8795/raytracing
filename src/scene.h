@@ -28,9 +28,16 @@ public:
 
 
 private:
+    glm::vec3 lightSkyColour(const glm::vec3& dir) const; // Returns sky colour in daytime.
+    glm::vec3 darkSkyColour(const glm::vec3& dir) const; // Returns sky colour in nighttime.
+
+
+private:
     std::vector<std::shared_ptr<Object>> m_objects; // Vector of object pointers to render.
 
-    static constexpr int MAX_DEPTH = 2; // Maximum number of times a ray can bounce.
+    static constexpr int MAX_DEPTH = 50; // Maximum number of times a ray can bounce.
+
+    static constexpr int SAMPLES_PER_PIXEL = 16; // Samples to use for a pixel.
 };
 
 

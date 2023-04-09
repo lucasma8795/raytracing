@@ -14,6 +14,12 @@ namespace Raytracer
 
 glm::vec3 Scene::raytrace(const Ray& ray) const
 {
+    // glm::vec3 color{0.0f};
+    // for (int i = 0; i < SAMPLES_PER_PIXEL; ++i)
+    // {
+    //     color += raytrace(ray, MAX_DEPTH);
+    // }
+    // return color * (1.0f / SAMPLES_PER_PIXEL);
     return raytrace(ray, MAX_DEPTH);
 }
 
@@ -55,8 +61,22 @@ glm::vec3 Scene::raytrace(const Ray& ray, int depth) const
 
     // we don't have a collision
     // return colour of the sky by lerping between 2 colours
-    // return Colours::ANTIQUE_WHITE;
-    return glm::mix(Colours::LIGHT_SKY_BLUE, Colours::LIGHT_CYAN, (ray.dir().y + 1) / 2);
+    // return skyColour(ray.dir());
+    // return Colours::BLACK;
+    return darkSkyColour(ray.dir());
+}
+
+
+glm::vec3 Scene::lightSkyColour(const glm::vec3& dir) const
+{
+    // we assume input is normalized
+    return glm::mix(Colours::LIGHT_SKY_BLUE, Colours::LIGHT_CYAN, (dir.y + 1) / 2);
+}
+
+
+glm::vec3 Scene::darkSkyColour(const glm::vec3& dir) const
+{
+    return glm::mix(Colours::BLACK, glm::vec3{0.04296875f, 0.0625f, 0.1484375f}, (dir.y + 1) / 2);
 }
 
 

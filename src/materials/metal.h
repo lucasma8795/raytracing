@@ -2,6 +2,7 @@
 #define MAT_METAL_H__3Jr5kAGAMd
 
 #include "../material.h"
+#include "../types.h"
 
 #include <glm/glm.hpp>
 
@@ -10,6 +11,7 @@ namespace Raytracer
 {
 
 
+// A metallic surface that perfectly reflects light rays.
 class Metal: public Material
 {
 public:

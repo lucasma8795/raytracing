@@ -7,7 +7,7 @@
 namespace Raytracer
 {
 
-// Version numbers
+// Version numbers.
 const int VER_MAJ   = 0;
 const int VER_MIN   = 0;
 const int VER_PATCH = 0;

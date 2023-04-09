@@ -6,6 +6,7 @@
 #include <memory>
 
 #include <glm/glm.hpp>
+#include <glm/gtc/random.hpp>
 
 
 namespace Raytracer
@@ -34,7 +35,13 @@ void Camera::update(float dt)
 
 Ray Camera::getRay(int x, int y)
 {
-    return Ray{m_origin, m_rayDirs[y * WINDOW_WIDTH + x]};
+    glm::vec3 random{
+        glm::linearRand(0.0f, 1.0f) / WINDOW_WIDTH,
+        glm::linearRand(0.0f, 1.0f) / WINDOW_HEIGHT,
+        0.0f
+    };
+
+    return Ray{m_origin, m_rayDirs[y * WINDOW_WIDTH + x] + random};
 }
 
 
@@ -46,7 +53,7 @@ void Camera::computeRayDirs()
         {
             glm::vec3 dir;
             dir.x = -ASPECT_RATIO + ASPECT_RATIO * 2 * (x / static_cast<float>(WINDOW_WIDTH));
-            dir.y = -1.0f + 2.0f * (y / static_cast<float>(WINDOW_HEIGHT));
+            dir.y = 1.0f - 2.0f * (y / static_cast<float>(WINDOW_HEIGHT));
             dir.z = 1.0f;
             
             m_rayDirs[y * WINDOW_WIDTH + x] = glm::normalize(dir);

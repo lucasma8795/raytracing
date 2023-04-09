@@ -20,7 +20,7 @@ namespace Raytracer
 Window::Window() noexcept
 {
     // Initialize image buffer.
-    m_image = std::make_unique<Image>(WINDOW_WIDTH, WINDOW_HEIGHT);
+    m_accumulated = std::make_unique<Image>(WINDOW_WIDTH, WINDOW_HEIGHT);
 
     // Scene selection.
     m_scene = testScene();
@@ -92,14 +92,14 @@ void Window::render()
             Ray cameraRay = m_camera.getRay(x, y);
 
             // Trace ray colour.
-            m_image->set(x, y, m_scene.raytrace(cameraRay));
+            m_accumulated->add(x, y, m_scene.raytrace(cameraRay));
         }
     }
 
     uint64_t end = SDL_GetPerformanceCounter();
 
-    float elapsed = (end - start) / static_cast<float>(SDL_GetPerformanceFrequency());
-    std::cout << "render time: " << elapsed * 1000.0f << "ms    ";
+    float dt = (end - start) / static_cast<float>(SDL_GetPerformanceFrequency());
+    std::cout << "render time: " << dt * 1000.0f << "ms    ";
 }
 
 
@@ -120,8 +120,9 @@ void Window::display()
             // pointer to pixel in SDL texture
             uint8_t* base = static_cast<uint8_t*>(pixels) + (y * WINDOW_WIDTH + x) * 4;
 
-            // quantize [0, 1) to [0, 255]
-            glm::vec3 colorRGB = glm::clamp(m_image->get(x, y), 0.0f, 0.9999f) * 256.0f;
+            // map [0, 1) to [0, 255]
+            glm::vec3 color = m_accumulated->get(x, y) * (1.0f / m_frameIndex);
+            glm::vec3 colorRGB = glm::clamp(color, 0.0f, 0.9999f) * 256.0f;
 
             // TODO: divide the color by the number of samples and gamma-correct for gamma=2.0.
 
@@ -141,6 +142,8 @@ void Window::display()
 
     float elapsed = (end - start) / static_cast<float>(SDL_GetPerformanceFrequency());
     std::cout << "display time: " << elapsed * 1000.0f << "ms" << std::endl;
+
+    ++m_frameIndex;
 }
 
 
