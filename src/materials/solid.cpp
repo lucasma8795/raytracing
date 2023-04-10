@@ -1,28 +1,28 @@
-#include "solid.h"
+// #include "solid.h"
 
-#include <glm/glm.hpp>
-
-
-namespace Raytracer
-{
+// #include <glm/glm.hpp>
 
 
-Solid::Solid(glm::vec3 albedo) noexcept
-    : m_albedo{albedo}
-{}
+// namespace Raytracer
+// {
 
 
-bool Solid::scatter(
-    const Ray& incident, const HitPayload& payload, glm::vec3& attenuation, Ray& scatter
-) const {
-    return false;
-}
+// Solid::Solid(glm::vec3 albedo) noexcept
+//     : m_albedo{albedo}
+// {}
 
 
-glm::vec3 Solid::emitted(const glm::vec3& normal) const
-{
-    return m_albedo;
-}
+// bool Solid::scatter(
+//     const Ray& incident, const HitPayload& payload, glm::vec3& attenuation, Ray& scatter
+// ) const {
+//     return false;
+// }
 
 
-} // namespace Raytracer
+// glm::vec3 Solid::emitted(const glm::vec3& normal) const
+// {
+//     return m_albedo;
+// }
+
+
+// } // namespace Raytracer

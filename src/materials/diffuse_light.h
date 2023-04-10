@@ -1,5 +1,5 @@
-#ifndef METAL_H__3Jr5kAGAMd
-#define METAL_H__3Jr5kAGAMd
+#ifndef DIFFUSE_LIGHT_H__xSnDlJpmkZ
+#define DIFFUSE_LIGHT_H__xSnDlJpmkZ
 
 #include "../material.h"
 #include "../texture.h"
@@ -14,29 +14,25 @@ namespace Raytracer
 {
 
 
-// A metallic surface that perfectly reflects light rays.
-class Metal: public Material
+class DiffuseLight: public Material
 {
 public:
-    // Create a solid material.
-    explicit Metal(glm::vec3 albedo, float fuzz) noexcept;
-    explicit Metal(std::shared_ptr<Texture> texture, float fuzz) noexcept;
+    // Create a diffuse light material.
+    explicit DiffuseLight(glm::vec3 albedo) noexcept;
+    explicit DiffuseLight(std::shared_ptr<Texture> texture) noexcept;
 
-    // Whether if there is a scatter ray.
+    // Always does not produce a scatter ray.
     virtual bool scatter(
         const Ray& incident, const HitPayload& payload, glm::vec3& attenuation, Ray& scatter
     ) const override;
 
-    // Always does not emit any light.
+    // Always emits light.
     virtual glm::vec3 emitted(float u, float v, const glm::vec3& p) const override;
 
 
 private:
     // Texture to use for the material.
     std::shared_ptr<Texture> m_texture;
-
-    // A control of how fuzzy the metal surface is.
-    float m_fuzz;
 };
 
 

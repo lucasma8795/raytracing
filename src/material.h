@@ -23,7 +23,7 @@ public:
     // Light emitted by the material.
     // If the material does not emit any light, returns glm::vec3{0.0f}.
     // Returned value can be larger than 1.0f to make the material bright enough.
-    virtual glm::vec3 emitted(const glm::vec3& normal) const = 0;
+    virtual glm::vec3 emitted(float u, float v, const glm::vec3& p) const = 0;
 };
 
 

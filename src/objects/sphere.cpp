@@ -36,9 +36,9 @@ bool Sphere::hit(const Ray& ray, float t_min, float t_max, HitPayload& payload) 
     if (payload.t < t_min || payload.t > t_max)
         return false; // outside of requested t range
 
-    payload.point = ray.at(payload.t);
+    payload.p = ray.at(payload.t);
     payload.material = m_material;
-    payload.normal = (payload.point - m_centre) / m_radius;
+    payload.N = (payload.p - m_centre) / m_radius;
 
     // glm::vec3 outwardNormal = (payload.point - m_centre) / m_radius;
     // bool frontFace = glm::dot(ray.dir(), outwardNormal);

@@ -1,5 +1,5 @@
-#ifndef MAT_DIELECTRIC_H__9ZFgdumO18
-#define MAT_DIELECTRIC_H__9ZFgdumO18
+#ifndef DIELECTRIC_H__9ZFgdumO18
+#define DIELECTRIC_H__9ZFgdumO18
 
 #include "../material.h"
 #include "../types.h"
@@ -24,17 +24,16 @@ public:
     ) const override;
 
     // Always does not emit any light.
-    virtual glm::vec3 emitted(const glm::vec3& normal) const override;
-
-
-private:
-    float m_ir; // Index of refraction.
+    virtual glm::vec3 emitted(float u, float v, const glm::vec3& p) const override;
 
 
 private:
     // Schlick's approximation for reflectance.
     static float reflectance(float cosTheta, float eta);
 
+
+private:
+    float m_ir; // Index of refraction.
 };
 
 

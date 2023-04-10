@@ -29,7 +29,7 @@ DEPENDS = $(CPPFILES:.cpp=.d)
 INCLUDE = -isystem /opt/homebrew/include/
 
 # libraries
-LIBS = -L/opt/homebrew/lib/ -lSDL2
+LIBS = -L/opt/homebrew/lib/ -lSDL2 -lSDL2_image
 
 # linker flags
 LDFLAGS = -flto=auto -pthread
@@ -61,4 +61,5 @@ clean:
 	rm -rf src/materials/*.o src/materials/*.d
 	rm -rf src/objects/*.o src/objects/*.d
 	rm -rf src/scenes/*.o src/scenes/*.d
+	rm -rf src/textures/*.o src/textures/*.d
 	rm -f $(EXEC_FILE)

@@ -47,7 +47,7 @@ glm::vec3 Scene::raytrace(const Ray& ray, int depth) const
         glm::vec3 attenuation; // factor to attenuate scattered ray by.
         Ray scatter; // scatter ray direction, if any.
         
-        glm::vec3 emitted = best.material->emitted(best.normal);
+        glm::vec3 emitted = best.material->emitted(best.u, best.v, best.p);
 
         if (best.material->scatter(ray, best, attenuation, scatter))
         {
@@ -63,7 +63,7 @@ glm::vec3 Scene::raytrace(const Ray& ray, int depth) const
     // return colour of the sky by lerping between 2 colours
     // return skyColour(ray.dir());
     // return Colours::BLACK;
-    return darkSkyColour(ray.dir());
+    return lightSkyColour(ray.dir());
 }
 
 

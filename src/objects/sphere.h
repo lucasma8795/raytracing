@@ -1,5 +1,5 @@
-#ifndef OBJ_SPHERE_H__3tvdWd7Pna
-#define OBJ_SPHERE_H__3tvdWd7Pna
+#ifndef OBJECTS_SPHERE_H__3tvdWd7Pna
+#define OBJECTS_SPHERE_H__3tvdWd7Pna
 
 #include "../material.h"
 #include "../object.h"
