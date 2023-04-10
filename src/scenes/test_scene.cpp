@@ -25,10 +25,10 @@ Scene testScene()
 
     // materials
     auto solidEarth    = make<DiffuseLight>(earthTexture);
-    auto metallicRed   = make<Metal>(Colours::SALMON, 0.0f);
+    auto metallicRed   = make<Metal>(SALMON, 0.0f);
     auto glass         = make<Dielectric>(1.5f);
     auto lightSource   = make<DiffuseLight>(glm::vec3{20.0f});
-    auto floorSurface = make<Lambertian>(Colours::DARK_KHAKI);
+    auto floorSurface  = make<Lambertian>(DARK_KHAKI);
 
     // objects
     auto sphere1 = make<Sphere>(glm::vec3{0.0f, -0.1f, 3.0f}, 0.9f, solidEarth);

@@ -1,5 +1,6 @@
 #include "lambertian.h"
 
+#include "../random.h"
 #include "../textures/solid_colour.h"
 #include "../texture.h"
 #include "../types.h"
@@ -7,7 +8,6 @@
 #include <algorithm>
 
 #include <glm/glm.hpp>
-#include <glm/gtc/random.hpp>
 
 
 namespace Raytracer
@@ -28,7 +28,7 @@ bool Lambertian::scatter(
     const Ray& incident, const HitPayload& payload, glm::vec3& attenuation, Ray& scatter
 ) const {
     // perfectly diffuse scatter direction
-    glm::vec3 scatterDirection = glm::normalize(payload.N + glm::ballRand(1.0f));
+    glm::vec3 scatterDirection = glm::normalize(payload.N + ballRand());
 
     // update attenuation and scatter ray
     attenuation = m_texture->colourAt(payload.u, payload.v, payload.p);

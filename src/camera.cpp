@@ -1,12 +1,12 @@
 #include "camera.h"
 
 #include "config.h"
+#include "random.h"
 #include "ray.h"
 
 #include <memory>
 
 #include <glm/glm.hpp>
-#include <glm/gtc/random.hpp>
 
 
 namespace Raytracer
@@ -36,8 +36,8 @@ void Camera::update(float dt)
 Ray Camera::getRay(int x, int y)
 {
     glm::vec3 random{
-        glm::linearRand(0.0f, 1.0f) / WINDOW_WIDTH,
-        glm::linearRand(0.0f, 1.0f) / WINDOW_HEIGHT,
+        linearRand() / WINDOW_WIDTH,
+        linearRand() / WINDOW_HEIGHT,
         0.0f
     };
 

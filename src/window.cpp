@@ -6,11 +6,11 @@
 #include "scenes/test_scene.h"
 
 #include <cstdint>
+#include <iomanip>
 #include <iostream>
 
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
-#include <glm/gtc/random.hpp>
 // #include <omp.h>
 
 
@@ -55,6 +55,9 @@ void Window::init()
         SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_STREAMING,
         WINDOW_WIDTH, WINDOW_HEIGHT
     );
+
+    // Set logging decimal place format.
+    std::cout << std::fixed << std::setprecision(3);
 }
 
 
@@ -101,7 +104,7 @@ void Window::render()
     uint64_t end = SDL_GetPerformanceCounter();
 
     float dt = (end - start) / static_cast<float>(SDL_GetPerformanceFrequency());
-    std::cout << "render time: " << dt * 1000.0f << "ms    ";
+    std::cout << "render: " << dt * 1000.0f << "ms / ";
 }
 
 
@@ -126,8 +129,6 @@ void Window::display()
             glm::vec3 colour = m_accumulated->get(x, y) * (1.0f / m_frameIndex);
             glm::vec3 colourRGB = glm::clamp(colour, 0.0f, 0.9999f) * 256.0f;
 
-            // TODO: divide the colour by the number of samples and gamma-correct for gamma=2.0.
-
             // RGBA8888 format
             *base++ = SDL_ALPHA_OPAQUE;                  // Alpha, 8 bits
             *base++ = static_cast<uint8_t>(colourRGB.b); // Blue, 8 bits
@@ -143,7 +144,7 @@ void Window::display()
     uint64_t end = SDL_GetPerformanceCounter();
 
     float elapsed = (end - start) / static_cast<float>(SDL_GetPerformanceFrequency());
-    std::cout << "display time: " << elapsed * 1000.0f << "ms" << std::endl;
+    std::cout << "display: " << elapsed * 1000.0f << "ms" << std::endl;
 
     ++m_frameIndex;
 }

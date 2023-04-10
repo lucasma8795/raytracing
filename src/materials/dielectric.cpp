@@ -1,11 +1,11 @@
 #include "dielectric.h"
 
+#include "../random.h"
 #include "../types.h"
 
 #include <algorithm>
 
 #include <glm/glm.hpp>
-#include <glm/gtc/random.hpp>
 
 
 namespace Raytracer
@@ -36,7 +36,7 @@ bool Dielectric::scatter(
 
     glm::vec3 direction; // reflection / refraction direction
 
-    if (totalInternalReflection || reflectance(cosTheta, eta) > glm::linearRand(0.0f, 1.0f))
+    if (totalInternalReflection || reflectance(cosTheta, eta) > linearRand())
     {
         // must reflect
         direction = glm::normalize(glm::reflect(incident.dir(), payload.N));

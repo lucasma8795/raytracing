@@ -1,11 +1,11 @@
 #include "metal.h"
 
+#include "../random.h"
 #include "../textures/solid_colour.h"
 #include "../texture.h"
 #include "../types.h"
 
 #include <glm/glm.hpp>
-#include <glm/gtc/random.hpp>
 
 
 namespace Raytracer
@@ -32,7 +32,7 @@ bool Metal::scatter(
 
     // add fuzz to the metal surface
     if (m_fuzz)
-        reflectDir += m_fuzz * glm::ballRand(1.0f);
+        reflectDir += m_fuzz * ballRand();
 
     // update attenuation and scatter ray
     attenuation = m_texture->colourAt(payload.u, payload.v, payload.p);

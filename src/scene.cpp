@@ -5,7 +5,6 @@
 #include "types.h"
 
 #include <glm/glm.hpp>
-#include <glm/gtc/random.hpp>
 
 
 namespace Raytracer
