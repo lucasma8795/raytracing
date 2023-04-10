@@ -9,8 +9,9 @@
 #include <iostream>
 
 #include <SDL2/SDL.h>
+#include <SDL2/SDL_image.h>
 #include <glm/gtc/random.hpp>
-#include <omp.h>
+// #include <omp.h>
 
 
 namespace Raytracer
@@ -31,9 +32,10 @@ void Window::init()
 {
     // Initialize the SDL library.
     if (SDL_Init(SDL_INIT_VIDEO) < 0)
-    {
         fatal("SDL failed to initialize!");
-    }
+
+    if (!(IMG_Init(IMG_INIT_PNG) & IMG_INIT_PNG))
+        fatal("SDL_image failed to initialize!");
 
     // Set SDL render quality to maximum.
     SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "best");
@@ -121,16 +123,16 @@ void Window::display()
             uint8_t* base = static_cast<uint8_t*>(pixels) + (y * WINDOW_WIDTH + x) * 4;
 
             // map [0, 1) to [0, 255]
-            glm::vec3 color = m_accumulated->get(x, y) * (1.0f / m_frameIndex);
-            glm::vec3 colorRGB = glm::clamp(color, 0.0f, 0.9999f) * 256.0f;
+            glm::vec3 colour = m_accumulated->get(x, y) * (1.0f / m_frameIndex);
+            glm::vec3 colourRGB = glm::clamp(colour, 0.0f, 0.9999f) * 256.0f;
 
-            // TODO: divide the color by the number of samples and gamma-correct for gamma=2.0.
+            // TODO: divide the colour by the number of samples and gamma-correct for gamma=2.0.
 
             // RGBA8888 format
-            *base++ = SDL_ALPHA_OPAQUE;                 // A, 8 bits
-            *base++ = static_cast<uint8_t>(colorRGB.z); // B, 8 bits
-            *base++ = static_cast<uint8_t>(colorRGB.y); // G, 8 bits
-            *base++ = static_cast<uint8_t>(colorRGB.x); // R, 8 bits
+            *base++ = SDL_ALPHA_OPAQUE;                  // Alpha, 8 bits
+            *base++ = static_cast<uint8_t>(colourRGB.b); // Blue, 8 bits
+            *base++ = static_cast<uint8_t>(colourRGB.g); // Green, 8 bits
+            *base++ = static_cast<uint8_t>(colourRGB.r); // Red, 8 bits
         }
     }
 

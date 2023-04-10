@@ -21,9 +21,9 @@ constexpr float INF = std::numeric_limits<float>::max();
 struct HitPayload
 {
     float t = INF; // for ray.at(t)
-    float u, v;
-    glm::vec3 p; // Point of collision.
-    glm::vec3 N; // Normal vector of surface.
+    float u, v;    // Relative coordinates (between 0 and 1) on the surface.
+    glm::vec3 p;   // Point of collision.
+    glm::vec3 N;   // Normal vector of surface.
     std::shared_ptr<Material> material;
 };
 

@@ -8,7 +8,7 @@ def main():
     
     for idx, row in df.iterrows():
         # https://stackoverflow.com/questions/1175208/elegant-python-function-to-convert-camelcase-to-snake-case
-        name = re.sub(r'(?<!^)(?=[A-Z])', '_', row.Color).upper()
+        name = re.sub(r'(?<!^)(?=[A-Z])', '_', row.Colour).upper()
 
         r, g, b = map(float, row.RGB.split(' '))
 

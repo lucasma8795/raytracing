@@ -32,7 +32,7 @@ bool DiffuseLight::scatter(
 
 glm::vec3 DiffuseLight::emitted(float u, float v, const glm::vec3& p) const
 {
-    return m_texture->colorAt(u, v, p); // always emit light
+    return m_texture->colourAt(u, v, p); // always emit light
 }
 
 

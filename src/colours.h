@@ -8,7 +8,7 @@ namespace Raytracer::Colours
 {
 
 
-// Auto-generated from https://en.wikipedia.org/wiki/Web_colors.
+// Auto-generated from https://en.wikipedia.org/wiki/Web_colours.
 
 constexpr glm::vec3 MEDIUM_VIOLET_RED{0.7773f, 0.0820f, 0.5195f};
 constexpr glm::vec3 DEEP_PINK{0.9961f, 0.0781f, 0.5742f};

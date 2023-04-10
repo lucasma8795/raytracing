@@ -23,6 +23,11 @@ public:
 
 
 private:
+    // Calculate spherical coordinates.
+    static void sphericalCoords(const glm::vec3& p, float& u, float& v);
+
+
+private:
     glm::vec3 m_centre; // Centre of the circle.
 
     float m_radius; // Radius of the circle.

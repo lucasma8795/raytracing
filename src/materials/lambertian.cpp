@@ -31,7 +31,7 @@ bool Lambertian::scatter(
     glm::vec3 scatterDirection = glm::normalize(payload.N + glm::ballRand(1.0f));
 
     // update attenuation and scatter ray
-    attenuation = m_texture->colorAt(payload.u, payload.v, payload.p);
+    attenuation = m_texture->colourAt(payload.u, payload.v, payload.p);
     scatter = Ray{payload.p, scatterDirection};
 
     return true; // always scatter
