@@ -42,7 +42,7 @@ CXXFLAGS  = -Ofast -Wall -Wextra -Wpedantic -Werror
 CXXFLAGS += -std=c++23 -march=native
 CXXFLAGS += -flto=auto -fopenmp # -pthread
 CXXFLAGS += -fno-exceptions -DNDEBUG
-CXXFLAGS += -Wno-unused-variable -Wno-unused-parameter
+# CXXFLAGS += -Wno-unused-variable -Wno-unused-parameter
 
 # build rules
 build: $(EXEC_FILE)

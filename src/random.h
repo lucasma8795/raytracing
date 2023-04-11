@@ -1,8 +1,7 @@
 #ifndef RANDOM_H__VFnaOfXzkz
 #define RANDOM_H__VFnaOfXzkz
 
-#include <stdio.h>
-#include <stdlib.h>
+#include <cstdlib>
 
 #include <glm/glm.hpp>
 #include <glm/gtx/norm.hpp>

@@ -27,13 +27,7 @@ Camera::Camera() noexcept
 }
 
 
-void Camera::update(float dt)
-{
-
-}
-
-
-Ray Camera::getRay(int x, int y)
+Ray Camera::getRay(int x, int y) const
 {
     glm::vec3 random{
         linearRand() / WINDOW_WIDTH,

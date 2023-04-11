@@ -14,6 +14,9 @@ namespace Raytracer
 {
 
 
+Image::Image() noexcept {}
+
+
 Image::Image(int width, int height) noexcept
     : m_width{width}, m_height{height}
 {
@@ -44,6 +47,7 @@ Image::Image(const std::string& path) noexcept
             int bpp = surface->format->BytesPerPixel;
             uint8_t* base = static_cast<uint8_t*>(surface->pixels) + y * surface->pitch + x * bpp;
 
+            // WARN: this will break with textures loaded in a different format!!!
             colour.r = *base++ / 255.0f;
             colour.g = *base++ / 255.0f;
             colour.b = *base++ / 255.0f;
@@ -52,7 +56,7 @@ Image::Image(const std::string& path) noexcept
         }
     }
 
-    SDL_FreeSurface(surface); // get rid of surface
+    SDL_FreeSurface(surface); // free surface contents
 }
 
 

@@ -24,7 +24,10 @@ DiffuseLight::DiffuseLight(std::shared_ptr<Texture> texture) noexcept
 
 
 bool DiffuseLight::scatter(
-    const Ray& incident, const HitPayload& payload, glm::vec3& attenuation, Ray& scatter
+    const Ray& incident __attribute__((unused)),
+    const HitPayload& payload __attribute__((unused)),
+    glm::vec3& attenuation __attribute__((unused)),
+    Ray& scatter __attribute__((unused))
 ) const {
     return false; // always do not scatter
 }

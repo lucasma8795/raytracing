@@ -18,6 +18,7 @@ class Image
 {
 public:
     // Create a new image.
+    explicit Image() noexcept;
     explicit Image(int width, int height) noexcept;
     explicit Image(const std::string& path) noexcept;
 

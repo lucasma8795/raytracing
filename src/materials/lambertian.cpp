@@ -25,7 +25,8 @@ Lambertian::Lambertian(std::shared_ptr<Texture> texture) noexcept
 
 
 bool Lambertian::scatter(
-    const Ray& incident, const HitPayload& payload, glm::vec3& attenuation, Ray& scatter
+    const Ray& incident __attribute__((unused)), const HitPayload& payload,
+    glm::vec3& attenuation, Ray& scatter
 ) const {
     // perfectly diffuse scatter direction
     glm::vec3 scatterDirection = glm::normalize(payload.N + ballRand());
@@ -38,8 +39,11 @@ bool Lambertian::scatter(
 }
 
 
-glm::vec3 Lambertian::emitted(float u, float v, const glm::vec3& p) const
-{
+glm::vec3 Lambertian::emitted(
+    float u __attribute__((unused)),
+    float v __attribute__((unused)),
+    const glm::vec3& p __attribute__((unused))
+) const {
     return glm::vec3{0.0f}; // always do not emit any light
 }
 

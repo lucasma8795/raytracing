@@ -11,7 +11,7 @@
 
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
-// #include <omp.h>
+#include <omp.h>
 
 
 namespace Raytracer
@@ -66,6 +66,7 @@ void Window::mainLoop()
     while (true)
     {
         handleEvents();
+        if (m_quit) return;
         render();
         display();
     }
@@ -79,7 +80,7 @@ void Window::quit()
     SDL_DestroyWindow(m_window); 
     SDL_Quit();
 
-    std::exit(EXIT_SUCCESS);
+    m_quit = true;
 }
 
 
@@ -120,20 +121,20 @@ void Window::display()
     // Loop over each pixel
     for (int y = 0; y < WINDOW_HEIGHT; ++y)
     {
+        // pointer to pixel in SDL texture
+        uint8_t* base = static_cast<uint8_t*>(pixels) + y * pitch;
+
         for (int x = 0; x < WINDOW_WIDTH; ++x)
         {
-            // pointer to pixel in SDL texture
-            uint8_t* base = static_cast<uint8_t*>(pixels) + (y * WINDOW_WIDTH + x) * 4;
-
             // map [0, 1) to [0, 255]
             glm::vec3 colour = m_accumulated->get(x, y) * (1.0f / m_frameIndex);
-            glm::vec3 colourRGB = glm::clamp(colour, 0.0f, 0.9999f) * 256.0f;
+            colour = glm::clamp(colour, 0.0f, 0.9999f) * 256.0f;
 
             // RGBA8888 format
-            *base++ = SDL_ALPHA_OPAQUE;                  // Alpha, 8 bits
-            *base++ = static_cast<uint8_t>(colourRGB.b); // Blue, 8 bits
-            *base++ = static_cast<uint8_t>(colourRGB.g); // Green, 8 bits
-            *base++ = static_cast<uint8_t>(colourRGB.r); // Red, 8 bits
+            *base++ = SDL_ALPHA_OPAQUE;
+            *base++ = static_cast<uint8_t>(colour.b);
+            *base++ = static_cast<uint8_t>(colour.g);
+            *base++ = static_cast<uint8_t>(colour.r);
         }
     }
 
@@ -143,8 +144,8 @@ void Window::display()
 
     uint64_t end = SDL_GetPerformanceCounter();
 
-    float elapsed = (end - start) / static_cast<float>(SDL_GetPerformanceFrequency());
-    std::cout << "display: " << elapsed * 1000.0f << "ms" << std::endl;
+    float dt = (end - start) / static_cast<float>(SDL_GetPerformanceFrequency());
+    std::cout << "display: " << dt * 1000.0f << "ms" << std::endl;
 
     ++m_frameIndex;
 }
@@ -160,8 +161,6 @@ void Window::handleEvents()
     {
         case SDL_QUIT:
             quit();
-        
-
     }
 }
 

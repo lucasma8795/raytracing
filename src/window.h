@@ -33,7 +33,7 @@ public:
     void mainLoop();
 
     // Kills the window.
-    void quit() __attribute__((noreturn));
+    void quit();
 
 
 private:
@@ -58,6 +58,8 @@ private:
     SDL_Renderer* m_renderer; // Instance of SDL2 renderer.
 
     int m_frameIndex = 1; // Number of frames since last camera movement.
+
+    bool m_quit = false; // Whether to kill the window as soon as possible.
 };
 
 

@@ -53,8 +53,11 @@ bool Dielectric::scatter(
 }
 
 
-glm::vec3 Dielectric::emitted(float u, float v, const glm::vec3& p) const
-{
+glm::vec3 Dielectric::emitted(
+    float u __attribute__((unused)),
+    float v __attribute__((unused)),
+    const glm::vec3& p __attribute__((unused))
+) const {
     return glm::vec3{0.0f}; // always do not emit any light
 }
 

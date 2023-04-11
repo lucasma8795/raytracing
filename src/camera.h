@@ -23,10 +23,10 @@ public:
     Camera& operator=(Camera const&) = delete;
 
     // Update the camera.
-    void update(float dt);
+    // void update(float dt);
 
     // Get the ray pointing from camera origin to given screen coordinates.
-    Ray getRay(int x, int y);
+    Ray getRay(int x, int y) const;
 
 
 private:

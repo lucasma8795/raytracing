@@ -10,8 +10,11 @@ SolidColour::SolidColour(glm::vec3 albedo) noexcept
 {}
 
 
-glm::vec3 SolidColour::colourAt(float u, float v, const glm::vec3& p) const
-{
+glm::vec3 SolidColour::colourAt(
+    float u __attribute__((unused)),
+    float v __attribute__((unused)),
+    const glm::vec3& p __attribute__((unused))
+) const {
     return m_albedo;
 }
 

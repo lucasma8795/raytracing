@@ -28,8 +28,8 @@ public:
 
 
 private:
-    glm::vec3 lightSkyColour(const glm::vec3& dir) const; // Returns sky colour in daytime.
-    glm::vec3 darkSkyColour(const glm::vec3& dir) const; // Returns sky colour in nighttime.
+    glm::vec3 lightSkyColour(const glm::vec3& dir) const; // Returns light sky colour.
+    glm::vec3 darkSkyColour(const glm::vec3& dir) const;  // Returns dark sky colour.
 
 
 private:

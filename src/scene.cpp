@@ -30,18 +30,18 @@ glm::vec3 Scene::raytrace(const Ray& ray, int depth) const
         return Colours::BLACK;
 
     HitPayload payload, best;
-    std::shared_ptr<Object> closest_obj = nullptr;
+    bool hit = false;
 
     for (auto object: m_objects)
     {
         if (object->hit(ray, 0.001, INF, payload) && payload.t < best.t)
         {
+            hit = true;
             best = payload; // copy best hit payload to current payload
-            closest_obj = object; // set closest object
         }
     }
 
-    if (closest_obj) // we have a collision
+    if (hit) // we have a collision
     {
         glm::vec3 attenuation; // factor to attenuate scattered ray by.
         Ray scatter; // scatter ray direction, if any.
@@ -59,7 +59,6 @@ glm::vec3 Scene::raytrace(const Ray& ray, int depth) const
     }
 
     // we don't have a collision
-    // return colour of the sky by lerping between 2 colours
     // return skyColour(ray.dir());
     // return Colours::BLACK;
     return lightSkyColour(ray.dir());
