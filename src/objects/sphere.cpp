@@ -33,6 +33,7 @@ bool Sphere::hit(const Ray& ray, float t_min, float t_max, HitPayload& payload) 
 
     // update collision payload information
     payload.t = (-half_b - glm::sqrt(discriminant)) / a;
+    // TODO check for + case as well
 
     if (payload.t < t_min || payload.t > t_max)
         return false; // outside of requested t range
@@ -53,8 +54,8 @@ bool Sphere::hit(const Ray& ray, float t_min, float t_max, HitPayload& payload) 
 
 void Sphere::sphericalCoords(const glm::vec3& p, float& u, float& v)
 {
-    float theta = acos(-p.y);
-    float phi = atan2(-p.z, p.x) + glm::pi<float>();
+    float theta = acosf(-p.y);
+    float phi = atan2f(-p.z, p.x) + glm::pi<float>();
 
     u = phi / (2 * glm::pi<float>());
     v = theta / glm::pi<float>();

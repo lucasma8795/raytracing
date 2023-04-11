@@ -25,10 +25,7 @@ public:
     // Delete copy constructor and assignment operator.
     Window(const Window&) = delete;
     Window& operator=(Window const&) = delete;
-
-    // Initialize the window.
-    void init();
-
+    
     // Main loop of the window. This operation is blocking.
     void mainLoop();
 
@@ -49,7 +46,7 @@ private:
     Scene m_scene; // Scene to render.
     
     // std::unique_ptr<Image> m_image; // Image buffer.
-    std::unique_ptr<Image> m_accumulated; // Accumulated image buffer.
+    Image m_accumulated; // Accumulated image buffer.
 
     SDL_Texture* m_buffer;
 

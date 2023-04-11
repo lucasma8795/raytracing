@@ -20,16 +20,14 @@ namespace Raytracer
 
 Window::Window() noexcept
 {
+    srand(920112); // for reproducibility
+
     // Initialize image buffer.
-    m_accumulated = std::make_unique<Image>(WINDOW_WIDTH, WINDOW_HEIGHT);
+    m_accumulated = Image(WINDOW_WIDTH, WINDOW_HEIGHT);
 
     // Scene selection.
     m_scene = testScene();
-}
 
-
-void Window::init()
-{
     // Initialize the SDL library.
     if (SDL_Init(SDL_INIT_VIDEO) < 0)
         fatal("SDL failed to initialize!");
@@ -47,7 +45,12 @@ void Window::init()
         WINDOW_WIDTH, WINDOW_HEIGHT,
         0
     );
+    if (!m_window)
+        fatal("SDL2 window failed to initialize!");
+
     m_renderer = SDL_CreateRenderer(m_window, -1, SDL_RENDERER_ACCELERATED);
+    if (!m_renderer)
+        fatal("SDL2 renderer failed to initialize!");
 
     // Create streaming texture for copying to renderer.
     m_buffer = SDL_CreateTexture(
@@ -98,7 +101,7 @@ void Window::render()
             Ray cameraRay = m_camera.getRay(x, y);
 
             // Trace ray colour.
-            m_accumulated->add(x, y, m_scene.raytrace(cameraRay));
+            m_accumulated.add(x, y, m_scene.raytrace(cameraRay));
         }
     }
 
@@ -127,7 +130,7 @@ void Window::display()
         for (int x = 0; x < WINDOW_WIDTH; ++x)
         {
             // map [0, 1) to [0, 255]
-            glm::vec3 colour = m_accumulated->get(x, y) * (1.0f / m_frameIndex);
+            glm::vec3 colour = m_accumulated.get(x, y) * (1.0f / m_frameIndex);
             colour = glm::clamp(colour, 0.0f, 0.9999f) * 256.0f;
 
             // RGBA8888 format

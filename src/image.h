@@ -22,15 +22,11 @@ public:
     explicit Image(int width, int height) noexcept;
     explicit Image(const std::string& path) noexcept;
 
-    // Delete copy constructor and assignment operator.
-    Image(const Image&) = delete;
-    Image& operator=(Image const&) = delete;
-
     // Reset the image to all black.
     void reset();
 
     // Get pixel colour at a given position.
-    glm::vec3 get(int x, int y);
+    glm::vec3 get(int x, int y) const;
 
     // Add to pixel colour at a given position.
     void add(int x, int y, glm::vec3 colour);
@@ -39,8 +35,8 @@ public:
     void set(int x, int y, glm::vec3 colour);
 
     // Getter for width and height.
-    int width();
-    int height();
+    int width() const;
+    int height() const;
 
 
 private:
@@ -58,7 +54,7 @@ inline void Image::reset()
 }
 
 
-inline glm::vec3 Image::get(int x, int y)
+inline glm::vec3 Image::get(int x, int y) const
 {
     // Bounds checking
     assert(x >= 0 && x < m_width && y >= 0 && y < m_height);
@@ -85,13 +81,13 @@ inline void Image::add(int x, int y, glm::vec3 colour)
 }
 
 
-inline int Image::width()
+inline int Image::width() const
 {
     return m_width;
 }
 
 
-inline int Image::height()
+inline int Image::height() const
 {
     return m_height;
 }

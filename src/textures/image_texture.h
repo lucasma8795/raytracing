@@ -25,7 +25,7 @@ public:
 
 
 private:
-    std::unique_ptr<Image> m_image; // Image buffer.
+    Image m_image; // Image buffer.
 };
 
 
