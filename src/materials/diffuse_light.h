@@ -20,6 +20,7 @@ public:
     // Create a diffuse light material.
     explicit DiffuseLight(glm::vec3 albedo) noexcept;
     explicit DiffuseLight(std::shared_ptr<Texture> texture) noexcept;
+    explicit DiffuseLight(std::shared_ptr<Texture> texture, float scale) noexcept;
 
     // Always does not produce a scatter ray.
     virtual bool scatter(
@@ -33,6 +34,9 @@ public:
 private:
     // Texture to use for the material.
     std::shared_ptr<Texture> m_texture;
+
+    // Scaling for the light.
+    float m_scale = 1.0f;
 };
 
 

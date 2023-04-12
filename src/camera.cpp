@@ -1,9 +1,12 @@
 #include "camera.h"
 
 #include "config.h"
+#include "events.h"
 #include "random.h"
 #include "ray.h"
 
+#include <functional>
+#include <iostream>
 #include <memory>
 
 #include <glm/glm.hpp>
@@ -24,6 +27,14 @@ Camera::Camera() noexcept
 
     // Compute cached ray directions.
     computeRayDirs();
+
+    EventMgr.subscribe(Event::CAMERA_MOVE, std::bind(&Camera::dummy, this));
+}
+
+
+void Camera::dummy() const
+{
+    std::cout << "keypress!" << std::endl;
 }
 
 

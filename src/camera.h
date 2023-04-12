@@ -32,6 +32,8 @@ public:
 private:
     void computeRayDirs(); // Compute cached ray directions.
 
+    void dummy() const;
+
 
 private:
     glm::vec3 m_origin; // Origin of the camera.

@@ -27,6 +27,7 @@ public:
 
     // Get pixel colour at a given position.
     glm::vec3 get(int x, int y) const;
+    glm::vec3 get(float x, float y) const;
 
     // Add to pixel colour at a given position.
     void add(int x, int y, glm::vec3 colour);
@@ -61,6 +62,12 @@ inline glm::vec3 Image::get(int x, int y) const
 
     return m_pixels[y * m_width + x];
 }
+
+
+// inline glm::vec3 Image::get(float x, float y) const
+// {
+//     // bilinear interpolation: TODO!
+// }
 
 
 inline void Image::set(int x, int y, glm::vec3 colour)

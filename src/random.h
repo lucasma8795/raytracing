@@ -2,6 +2,7 @@
 #define RANDOM_H__VFnaOfXzkz
 
 #include <cstdlib>
+#include <limits>
 
 #include <glm/glm.hpp>
 #include <glm/gtx/norm.hpp>
@@ -9,6 +10,15 @@
 
 namespace Raytracer
 {
+
+
+// Returns a random 32-bit integer.
+// See https://en.wikipedia.org/wiki/Xorshift
+static thread_local uint32_t xorshiftState = 4229866139U;
+uint32_t xorshift32();
+
+// Maximum value that xorshift32() can return.
+constexpr uint32_t XORSHIFT_RAND_MAX = std::numeric_limits<uint32_t>::max();
 
 // Returns a random float between 0 and 1.
 float linearRand();
@@ -18,9 +28,18 @@ float linearRand(float min, float max);
 glm::vec3 ballRand();
 
 
+inline uint32_t xorshift32() {
+    uint32_t r = xorshiftState;
+    r ^= r << 13;
+    r ^= r >> 17;
+    r ^= r << 5;
+    return xorshiftState = r;
+}
+
+
 inline float linearRand()
 {
-    return rand() / static_cast<float>(RAND_MAX);
+    return xorshift32() / static_cast<float>(XORSHIFT_RAND_MAX);
 }
 
 

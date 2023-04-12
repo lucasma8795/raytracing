@@ -6,6 +6,8 @@
 #include "camera.h"
 #include "scene.h"
 
+#include <chrono>
+#include <map>
 #include <memory>
 
 #include <SDL2/SDL.h>
@@ -34,10 +36,10 @@ public:
 
 
 private:
-    void render();  // Render the scene.
-    void display(); // Copy the image buffer to the window.
-
-    void handleEvents(); // Handle SDL2 emitted events.
+    void render();         // Render the scene.
+    void display();        // Copy the image buffer to the window.
+    void handleEvents();   // Handle SDL2 emitted events.
+    void update(); // Updates program components.
 
 
 private:
@@ -57,6 +59,10 @@ private:
     int m_frameIndex = 1; // Number of frames since last camera movement.
 
     bool m_quit = false; // Whether to kill the window as soon as possible.
+
+    std::chrono::high_resolution_clock::time_point m_start; // Program start timestamp.
+
+    std::map<SDL_Keycode, bool> m_keyboard; // Whether a key is pressed.
 };
 
 

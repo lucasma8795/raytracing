@@ -23,6 +23,11 @@ DiffuseLight::DiffuseLight(std::shared_ptr<Texture> texture) noexcept
 {}
 
 
+DiffuseLight::DiffuseLight(std::shared_ptr<Texture> texture, float scale) noexcept
+    : m_texture{texture}, m_scale{scale}
+{}
+
+
 bool DiffuseLight::scatter(
     const Ray& incident __attribute__((unused)),
     const HitPayload& payload __attribute__((unused)),
@@ -35,7 +40,7 @@ bool DiffuseLight::scatter(
 
 glm::vec3 DiffuseLight::emitted(float u, float v, const glm::vec3& p) const
 {
-    return m_texture->colourAt(u, v, p); // always emit light
+    return m_texture->colourAt(u, v, p) * m_scale; // always emit light
 }
 
 

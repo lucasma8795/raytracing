@@ -1,17 +1,21 @@
 #include "window.h"
 
 #include "config.h"
+#include "events.h"
 #include "image.h"
-#include "utils.h"
+#include "postprocessing.h"
 #include "scenes/test_scene.h"
+#include "scenes/planets.h"
+#include "utils.h"
 
+#include <chrono>
 #include <cstdint>
 #include <iomanip>
 #include <iostream>
 
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
-#include <omp.h>
+// #include <omp.h>
 
 
 namespace Raytracer
@@ -20,13 +24,11 @@ namespace Raytracer
 
 Window::Window() noexcept
 {
-    srand(920112); // for reproducibility
-
     // Initialize image buffer.
     m_accumulated = Image(WINDOW_WIDTH, WINDOW_HEIGHT);
 
     // Scene selection.
-    m_scene = testScene();
+    m_scene = planets();
 
     // Initialize the SDL library.
     if (SDL_Init(SDL_INIT_VIDEO) < 0)
@@ -43,7 +45,7 @@ Window::Window() noexcept
         WINDOW_TITLE.c_str(),
         SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
         WINDOW_WIDTH, WINDOW_HEIGHT,
-        0
+        0 // SDL_WINDOW_FULLSCREEN
     );
     if (!m_window)
         fatal("SDL2 window failed to initialize!");
@@ -61,6 +63,9 @@ Window::Window() noexcept
 
     // Set logging decimal place format.
     std::cout << std::fixed << std::setprecision(3);
+
+    // Set program start timestamp.
+    m_start = std::chrono::high_resolution_clock::now();
 }
 
 
@@ -69,7 +74,9 @@ void Window::mainLoop()
     while (true)
     {
         handleEvents();
+        update();
         if (m_quit) return;
+
         render();
         display();
     }
@@ -121,7 +128,7 @@ void Window::display()
 
     SDL_LockTexture(m_buffer, NULL, &pixels, &pitch);
 
-    // Loop over each pixel
+    // loop over each pixel
     for (int y = 0; y < WINDOW_HEIGHT; ++y)
     {
         // pointer to pixel in SDL texture
@@ -131,7 +138,7 @@ void Window::display()
         {
             // map [0, 1) to [0, 255]
             glm::vec3 colour = m_accumulated.get(x, y) * (1.0f / m_frameIndex);
-            colour = glm::clamp(colour, 0.0f, 0.9999f) * 256.0f;
+            colour = glm::min(toneMap(colour), 0.9999f) * 256.0f;
 
             // RGBA8888 format
             *base++ = SDL_ALPHA_OPAQUE;
@@ -156,7 +163,6 @@ void Window::display()
 
 void Window::handleEvents()
 {
-    // Wait for an SDL event.
     // SDL_WaitEvent(&m_event);
     SDL_PollEvent(&m_event);
 
@@ -164,7 +170,33 @@ void Window::handleEvents()
     {
         case SDL_QUIT:
             quit();
+            break;
+
+        case SDL_KEYDOWN:
+            m_keyboard[m_event.key.keysym.sym] = true;
+            break;
+
+        case SDL_KEYUP:
+            m_keyboard[m_event.key.keysym.sym] = false;
+            break;
     }
+}
+
+
+void Window::update()
+{
+    uint64_t start = SDL_GetPerformanceCounter();
+
+    if (m_keyboard[SDLK_ESCAPE])
+        quit();
+
+    if (m_keyboard[SDLK_w])
+        EventMgr.fire(Event::CAMERA_MOVE);
+
+    uint64_t end = SDL_GetPerformanceCounter();
+
+    float dt = (end - start) / static_cast<float>(SDL_GetPerformanceFrequency());
+    std::cout << "update: " << dt * 1000.0f << "ms / ";
 }
 
 
