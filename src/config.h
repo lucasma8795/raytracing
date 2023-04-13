@@ -23,6 +23,8 @@ constexpr float ASPECT_RATIO = static_cast<float>(WINDOW_WIDTH) / WINDOW_HEIGHT;
 // Number of pixels.
 constexpr int NUM_PIXELS = WINDOW_WIDTH * WINDOW_HEIGHT;
 
+constexpr float CAMERA_MOVESPEED = 5.0f;
+
 
 } // namespace Raytracer
 

@@ -30,13 +30,17 @@ public:
 
 
 private:
-    void computeRayDirs(); // Compute cached ray directions.
+    // Camera movements.
+    void translateCamera(glm::vec3 dir, float dt);
 
-    void dummy() const;
+    // Compute cached ray directions.
+    void computeRayDirs();
 
 
 private:
     glm::vec3 m_origin; // Origin of the camera.
+
+    int m_focalLength = 1.0f;
 
     // glm::vec3 m_forwardDirection; // Direction that the camera is pointing at.
     // glm::vec3 m_rightDirection;   // Right direction relative to camera position.

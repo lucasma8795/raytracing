@@ -32,22 +32,21 @@ bool Sphere::hit(const Ray& ray, float t_min, float t_max, HitPayload& payload) 
 
     if (discriminant < 0) return false; // no real roots -> no intersection
 
-    // update collision payload information
-    payload.t = (-half_b - glm::sqrt(discriminant)) / a;
     // TODO check for + case as well
-
+    payload.t = (-half_b - glm::sqrt(discriminant)) / a;
     if (payload.t < t_min || payload.t > t_max)
         return false; // outside of requested t range
 
     payload.p = ray.at(payload.t);
     payload.material = m_material;
-    payload.N = (payload.p - m_centre) / m_radius;
-
-    sphericalCoords(payload.N, payload.u, payload.v);
     
-    // glm::vec3 outwardNormal = (payload.point - m_centre) / m_radius;
-    // bool frontFace = glm::dot(ray.dir(), outwardNormal);
-    // payload.normal = frontFace ? outwardNormal : -outwardNormal;
+    // set normal such that it always points against the incident ray
+    glm::vec3 outwardNormal = (payload.p - m_centre) / m_radius;
+    payload.isFrontFace = glm::dot(ray.dir(), outwardNormal) < 0.0f;
+    payload.N = payload.isFrontFace ? outwardNormal : -outwardNormal;
+
+    // compute spherical coordinates
+    sphericalCoords(payload.N, payload.u, payload.v);
 
     return true;
 }

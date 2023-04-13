@@ -1,8 +1,12 @@
 #ifndef EVENTS_H__ZRE0pCahEn
 #define EVENTS_H__ZRE0pCahEn
 
+#include "utils.h"
+
+#include <any>
 #include <functional>
 #include <map>
+#include <type_traits>
 #include <vector>
 
 #include <SDL2/SDL.h>
@@ -14,7 +18,14 @@ namespace Raytracer
 
 enum class Event
 {
-    CAMERA_MOVE
+    CAMERA_TRANSLATE
+};
+
+
+template <typename T>
+struct identity
+{
+    typedef T type;
 };
 
 
@@ -23,40 +34,55 @@ class EventManager
 {
 public:
     // Fire an event.
-    template<typename... Args>
-    void fire(Event event, Args... args);
+    template<typename... Args> void fire(Event event, Args... args);
 
     // Subscribe to an event.
-    void subscribe(Event event, std::function<void()> callback);
+    template<typename... Args> void subscribe(Event event, std::function<void(Args...)> callback);
+    template<typename T> void subscribe(Event event, T callback);
 
     // Unsubscribe to an event.
-    // template<typename... Args> void unsubscribe(Event event, std::function<void(Args...)> callback);
+    // template<typename... Args> void unsubscribe(Event event, void callback(Args...));
 
 
 private:
     // Maps an event to a vector of functions.
-    std::map<Event, std::vector<std::function<void()>>> m_delegates;
+    std::map<Event, std::vector<std::function<void(std::any)>>> m_callbacks;
 };
 
 
 template<typename... Args>
 inline void EventManager::fire(Event event, Args... args)
 {
-    for (auto callback: m_delegates[event])
+    std::tuple<Args...> tuple = std::make_tuple(args...);
+
+    for (auto callback: m_callbacks[event])
     {
-        callback(args...);
+        callback(tuple);
     }
 }
 
 
-inline void EventManager::subscribe(Event event, std::function<void()> callback)
+template<typename... Args>
+inline void EventManager::subscribe(Event event, std::function<void(Args...)> callback)
 {
-    m_delegates[event].push_back(callback);
+    m_callbacks[event].emplace_back(
+        [=](std::any args) -> void {
+            auto tuple = std::any_cast<std::tuple<Args...>>(args);
+            std::apply(callback, tuple);
+        }
+    );
+}
+
+
+template<typename T>
+inline void EventManager::subscribe(Event event, T callback)
+{
+    subscribe(event, std::function(callback));
 }
 
 
 // Global event manager.
-extern EventManager EventMgr;
+extern EventManager g_eventMgr;
 
 
 } // namespace Raytracer::Input

@@ -7,7 +7,7 @@ namespace Raytracer
 {
 
 
-EventManager EventMgr;
+EventManager g_eventMgr;
 
 
 } // namespace Raytracer

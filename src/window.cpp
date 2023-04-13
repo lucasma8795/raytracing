@@ -17,6 +17,8 @@
 #include <SDL2/SDL_image.h>
 // #include <omp.h>
 
+#include <glm/gtx/norm.hpp>
+
 
 namespace Raytracer
 {
@@ -28,6 +30,7 @@ Window::Window() noexcept
     m_accumulated = Image(WINDOW_WIDTH, WINDOW_HEIGHT);
 
     // Scene selection.
+    // m_scene = testScene();
     m_scene = planets();
 
     // Initialize the SDL library.
@@ -64,17 +67,26 @@ Window::Window() noexcept
     // Set logging decimal place format.
     std::cout << std::fixed << std::setprecision(3);
 
-    // Set program start timestamp.
-    m_start = std::chrono::high_resolution_clock::now();
+    // Bind events.
+    g_eventMgr.subscribe(Event::CAMERA_TRANSLATE, [this](glm::vec3 dir, float dt) {
+        m_frameIndex = 1;
+        m_accumulated.reset();
+    });
 }
 
 
 void Window::mainLoop()
 {
+    auto oldTime = std::chrono::high_resolution_clock::now();
+
     while (true)
     {
+        auto newTime = std::chrono::high_resolution_clock::now();
+        float dt = (oldTime - newTime).count() / 1e9;
+        oldTime = newTime;
+
         handleEvents();
-        update();
+        update(dt);
         if (m_quit) return;
 
         render();
@@ -183,20 +195,26 @@ void Window::handleEvents()
 }
 
 
-void Window::update()
+void Window::update(float dt)
 {
     uint64_t start = SDL_GetPerformanceCounter();
+
+    glm::vec3 velocity{0.0f};
 
     if (m_keyboard[SDLK_ESCAPE])
         quit();
 
-    if (m_keyboard[SDLK_w])
-        EventMgr.fire(Event::CAMERA_MOVE);
+    else if (m_keyboard[SDLK_w]) velocity += DIR_FRONT;
+    else if (m_keyboard[SDLK_s]) velocity += DIR_BACK;
+    
+    if (glm::length2(velocity) != 0.0f)
+        g_eventMgr.fire(Event::CAMERA_TRANSLATE, velocity, dt);
+
 
     uint64_t end = SDL_GetPerformanceCounter();
 
-    float dt = (end - start) / static_cast<float>(SDL_GetPerformanceFrequency());
-    std::cout << "update: " << dt * 1000.0f << "ms / ";
+    float delta = (end - start) / static_cast<float>(SDL_GetPerformanceFrequency());
+    std::cout << "update: " << delta * 1000.0f << "ms / ";
 }
 
 

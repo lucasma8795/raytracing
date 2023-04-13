@@ -39,7 +39,7 @@ private:
     void render();         // Render the scene.
     void display();        // Copy the image buffer to the window.
     void handleEvents();   // Handle SDL2 emitted events.
-    void update(); // Updates program components.
+    void update(float dt); // Updates program components.
 
 
 private:

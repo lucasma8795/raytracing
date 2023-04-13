@@ -16,6 +16,9 @@ namespace Raytracer
 {
 
 
+using namespace std::placeholders;
+
+
 Camera::Camera() noexcept
 {
     m_origin = glm::vec3{0.0f, 0.0f, 0.0f};
@@ -28,13 +31,14 @@ Camera::Camera() noexcept
     // Compute cached ray directions.
     computeRayDirs();
 
-    EventMgr.subscribe(Event::CAMERA_MOVE, std::bind(&Camera::dummy, this));
-}
-
-
-void Camera::dummy() const
-{
-    std::cout << "keypress!" << std::endl;
+    // Subscribe to camera move events.
+    g_eventMgr.subscribe(
+        Event::CAMERA_TRANSLATE,
+        [this](glm::vec3 dir, float dt)
+        {
+            this->translateCamera(dir, dt);
+        }
+    );
 }
 
 
@@ -50,16 +54,25 @@ Ray Camera::getRay(int x, int y) const
 }
 
 
+void Camera::translateCamera(glm::vec3 dir, float dt)
+{
+    m_origin += dir * dt * CAMERA_MOVESPEED;
+
+    // computeRayDirs();
+}
+
+
 void Camera::computeRayDirs()
 {
     for (int y = 0; y < WINDOW_HEIGHT; ++y)
     {
         for (int x = 0; x < WINDOW_WIDTH; ++x)
         {
-            glm::vec3 dir;
-            dir.x = -ASPECT_RATIO + ASPECT_RATIO * 2 * (x / static_cast<float>(WINDOW_WIDTH));
-            dir.y = 1.0f - 2.0f * (y / static_cast<float>(WINDOW_HEIGHT));
-            dir.z = 1.0f;
+            glm::vec3 dir{
+                -ASPECT_RATIO + ASPECT_RATIO * 2 * (x / static_cast<float>(WINDOW_WIDTH)),
+                1.0f - 2.0f * (y / static_cast<float>(WINDOW_HEIGHT)),
+                m_focalLength
+            };
             
             m_rayDirs[y * WINDOW_WIDTH + x] = glm::normalize(dir);
         }

@@ -25,9 +25,7 @@ bool Dielectric::scatter(
     attenuation = glm::vec3{1.0f};
 
     // are we bending towards or against the normal?
-    bool isFrontFace = glm::dot(incident.dir(), payload.N) < 0;
-
-    float eta = isFrontFace ? (1.0f / m_ir) : m_ir; // refraction ratio
+    float eta = payload.isFrontFace ? (1.0f / m_ir) : m_ir; // refraction ratio
 
     float cosTheta = glm::min(glm::dot(-incident.dir(), payload.N), 1.0f);
     float sinTheta = glm::sqrt(1 - cosTheta * cosTheta);
@@ -66,8 +64,7 @@ glm::vec3 Dielectric::emitted(
 float Dielectric::reflectance(float cosTheta, float eta)
 {
     // https://en.wikipedia.org/wiki/Schlick%27s_approximation
-    float r0 = (1.0f - eta) / (1.0f + eta);
-    r0 *= r0;
+    float r0 = std::pow((1.0f - eta) / (1.0f + eta), 2);
     return r0 + (1.0f - r0) * std::pow(1.0f - cosTheta, 5);
 }
 

@@ -55,14 +55,14 @@ glm::vec3 Scene::raytrace(const Ray& ray, int depth) const
     // we don't have a collision
     // return skyColour(ray.dir());
     // return Colours::BLACK;
-    return darkSkyColour(ray.dir());
+    return lightSkyColour(ray.dir());
 }
 
 
 glm::vec3 Scene::lightSkyColour(const glm::vec3& dir) const
 {
     // we assume input is normalized
-    return glm::mix(Colours::LIGHT_SKY_BLUE, Colours::LIGHT_CYAN, (dir.y + 1) / 2);
+    return glm::mix(Colours::WHITE, glm::vec3{0.5f, 0.7f, 1.0f}, (dir.y + 1) / 2);
 }
 
 
