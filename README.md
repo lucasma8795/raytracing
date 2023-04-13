@@ -2,6 +2,7 @@
 
 A simple real-time ray tracer with a controllable camera.
 
+## Demo
 ![demo image](demo_light.png)
 
 ## Getting Started
