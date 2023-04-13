@@ -59,16 +59,17 @@ glm::vec3 Scene::raytrace(const Ray& ray, int depth) const
 }
 
 
-glm::vec3 Scene::lightSkyColour(const glm::vec3& dir) const
+glm::vec3 Scene::lightSkyColour(const glm::vec3& dir)
 {
     // we assume input is normalized
     return glm::mix(Colours::WHITE, glm::vec3{0.5f, 0.7f, 1.0f}, (dir.y + 1) / 2);
 }
 
 
-glm::vec3 Scene::darkSkyColour(const glm::vec3& dir) const
+glm::vec3 Scene::darkSkyColour(const glm::vec3& dir)
 {
-    return glm::mix(Colours::BLACK, glm::vec3{0.04296875f, 0.0625f, 0.1484375f} * 3.0f, (dir.y + 1) / 2);
+    // we assume input is normalized
+    return glm::mix(Colours::BLACK, glm::vec3{0.043f, 0.063f, 0.148f} * 3.0f, (dir.y + 1) / 2);
 }
 
 

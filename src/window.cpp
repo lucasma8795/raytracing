@@ -27,11 +27,10 @@ namespace Raytracer
 Window::Window() noexcept
 {
     // Initialize image buffer.
-    m_accumulated = Image(WINDOW_WIDTH, WINDOW_HEIGHT);
+    m_accumulated = Image(VIEWPORT_WIDTH, VIEWPORT_HEIGHT);
 
     // Scene selection.
-    // m_scene = testScene();
-    m_scene = planets();
+    m_scene = testScene();
 
     // Initialize the SDL library.
     if (SDL_Init(SDL_INIT_VIDEO) < 0)
@@ -45,10 +44,10 @@ Window::Window() noexcept
     
     // Create window and renderer.
     m_window = SDL_CreateWindow(
-        WINDOW_TITLE.c_str(),
+        PROJECT_TITLE.c_str(),
         SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
-        WINDOW_WIDTH, WINDOW_HEIGHT,
-        0 // SDL_WINDOW_FULLSCREEN
+        VIEWPORT_WIDTH, VIEWPORT_HEIGHT,
+        IS_FULLSCREEN ? SDL_WINDOW_FULLSCREEN : 0
     );
     if (!m_window)
         fatal("SDL2 window failed to initialize!");
@@ -61,7 +60,7 @@ Window::Window() noexcept
     m_buffer = SDL_CreateTexture(
         m_renderer,
         SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_STREAMING,
-        WINDOW_WIDTH, WINDOW_HEIGHT
+        VIEWPORT_WIDTH, VIEWPORT_HEIGHT
     );
 
     // Set logging decimal place format.
@@ -72,21 +71,19 @@ Window::Window() noexcept
         m_frameIndex = 1;
         m_accumulated.reset();
     });
+
+    g_eventMgr.subscribe(Event::SCREENSHOT, [this]() {
+        screenshot("out.png");
+    });
 }
 
 
 void Window::mainLoop()
 {
-    auto oldTime = std::chrono::high_resolution_clock::now();
-
     while (true)
     {
-        auto newTime = std::chrono::high_resolution_clock::now();
-        float dt = (oldTime - newTime).count() / 1e9;
-        oldTime = newTime;
-
         handleEvents();
-        update(dt);
+        update();
         if (m_quit) return;
 
         render();
@@ -112,9 +109,9 @@ void Window::render()
 
     // Loop over each pixel
     // #pragma omp parallel for num_threads(10)
-    for (int y = 0; y < WINDOW_HEIGHT; ++y)
+    for (int y = 0; y < VIEWPORT_HEIGHT; ++y)
     {
-        for (int x = 0; x < WINDOW_WIDTH; ++x)
+        for (int x = 0; x < VIEWPORT_WIDTH; ++x)
         {
             // Ray pointing from camera origin to screen coordinates.
             Ray cameraRay = m_camera.getRay(x, y);
@@ -141,12 +138,12 @@ void Window::display()
     SDL_LockTexture(m_buffer, NULL, &pixels, &pitch);
 
     // loop over each pixel
-    for (int y = 0; y < WINDOW_HEIGHT; ++y)
+    for (int y = 0; y < VIEWPORT_HEIGHT; ++y)
     {
         // pointer to pixel in SDL texture
         uint8_t* base = static_cast<uint8_t*>(pixels) + y * pitch;
 
-        for (int x = 0; x < WINDOW_WIDTH; ++x)
+        for (int x = 0; x < VIEWPORT_WIDTH; ++x)
         {
             // map [0, 1) to [0, 255]
             glm::vec3 colour = m_accumulated.get(x, y) * (1.0f / m_frameIndex);
@@ -195,26 +192,55 @@ void Window::handleEvents()
 }
 
 
-void Window::update(float dt)
+void Window::update()
 {
-    uint64_t start = SDL_GetPerformanceCounter();
+    auto newTime = std::chrono::high_resolution_clock::now();
+    float dt = (newTime - m_oldTime).count() * 1e-9; // ns to s;
+    m_oldTime = newTime;
 
     glm::vec3 velocity{0.0f};
 
     if (m_keyboard[SDLK_ESCAPE])
         quit();
 
-    else if (m_keyboard[SDLK_w]) velocity += DIR_FRONT;
-    else if (m_keyboard[SDLK_s]) velocity += DIR_BACK;
+    if (m_keyboard[SDLK_p])
+    {
+        g_eventMgr.fire(Event::SCREENSHOT);
+        quit();
+    }
+
+    if (m_keyboard[SDLK_w])       velocity += DIR_FRONT;
+    if (m_keyboard[SDLK_s])       velocity += DIR_BACK;
+    if (m_keyboard[SDLK_a])       velocity += DIR_LEFT;
+    if (m_keyboard[SDLK_d])       velocity += DIR_RIGHT;
+    if (m_keyboard[SDLK_SPACE])   velocity += DIR_UP;
+    if (m_keyboard[SDLK_LSHIFT])  velocity += DIR_DOWN;
     
-    if (glm::length2(velocity) != 0.0f)
+    if (velocity != glm::vec3{0.0f})
         g_eventMgr.fire(Event::CAMERA_TRANSLATE, velocity, dt);
+}
 
 
-    uint64_t end = SDL_GetPerformanceCounter();
+void Window::screenshot(const std::string& path)
+{
+    // create surface
+    SDL_Surface *screenshot = SDL_CreateRGBSurface(
+        0, VIEWPORT_WIDTH, VIEWPORT_HEIGHT, 32,
+        0x00ff0000, 0x0000ff00, 0x000000ff, 0xff000000
+    );
+    if (screenshot == nullptr)
+        fatal("Error while creating screenshot surface!");
 
-    float delta = (end - start) / static_cast<float>(SDL_GetPerformanceFrequency());
-    std::cout << "update: " << delta * 1000.0f << "ms / ";
+    // copy pixels to surface
+    if (SDL_MUSTLOCK(screenshot)) SDL_LockSurface(screenshot);
+    SDL_RenderReadPixels(
+        m_renderer, NULL, 0, screenshot->pixels, screenshot->pitch
+    );
+    if (SDL_MUSTLOCK(screenshot)) SDL_UnlockSurface(screenshot);
+
+    // save image
+    IMG_SavePNG(screenshot, path.c_str());
+    SDL_FreeSurface(screenshot);
 }
 
 

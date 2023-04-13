@@ -45,12 +45,12 @@ Camera::Camera() noexcept
 Ray Camera::getRay(int x, int y) const
 {
     glm::vec3 random{
-        linearRand() / WINDOW_WIDTH,
-        linearRand() / WINDOW_HEIGHT,
+        linearRand() / VIEWPORT_WIDTH,
+        linearRand() / VIEWPORT_HEIGHT,
         0.0f
     };
 
-    return Ray{m_origin, m_rayDirs[y * WINDOW_WIDTH + x] + random};
+    return Ray{m_origin, m_rayDirs[y * VIEWPORT_WIDTH + x] + random};
 }
 
 
@@ -64,17 +64,17 @@ void Camera::translateCamera(glm::vec3 dir, float dt)
 
 void Camera::computeRayDirs()
 {
-    for (int y = 0; y < WINDOW_HEIGHT; ++y)
+    for (int y = 0; y < VIEWPORT_HEIGHT; ++y)
     {
-        for (int x = 0; x < WINDOW_WIDTH; ++x)
+        for (int x = 0; x < VIEWPORT_WIDTH; ++x)
         {
             glm::vec3 dir{
-                -ASPECT_RATIO + ASPECT_RATIO * 2 * (x / static_cast<float>(WINDOW_WIDTH)),
-                1.0f - 2.0f * (y / static_cast<float>(WINDOW_HEIGHT)),
+                -ASPECT_RATIO + ASPECT_RATIO * 2 * (x / static_cast<float>(VIEWPORT_WIDTH)),
+                1.0f - 2.0f * (y / static_cast<float>(VIEWPORT_HEIGHT)),
                 m_focalLength
             };
             
-            m_rayDirs[y * WINDOW_WIDTH + x] = glm::normalize(dir);
+            m_rayDirs[y * VIEWPORT_WIDTH + x] = glm::normalize(dir);
         }
     }
 }

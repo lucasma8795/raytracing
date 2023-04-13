@@ -1,12 +1,9 @@
 #ifndef EVENTS_H__ZRE0pCahEn
 #define EVENTS_H__ZRE0pCahEn
 
-#include "utils.h"
-
 #include <any>
 #include <functional>
 #include <map>
-#include <type_traits>
 #include <vector>
 
 #include <SDL2/SDL.h>
@@ -16,16 +13,15 @@ namespace Raytracer
 {
 
 
+// TODO: type safety
+// https://gist.github.com/asmwarrior/473a4ad40bfba7a1e8eb777ed0bb7846
+
+
+// All available events.
 enum class Event
 {
-    CAMERA_TRANSLATE
-};
-
-
-template <typename T>
-struct identity
-{
-    typedef T type;
+    CAMERA_TRANSLATE,
+    SCREENSHOT
 };
 
 

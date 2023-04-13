@@ -39,7 +39,9 @@ private:
     void render();         // Render the scene.
     void display();        // Copy the image buffer to the window.
     void handleEvents();   // Handle SDL2 emitted events.
-    void update(float dt); // Updates program components.
+    void update();         // Updates program components.
+
+    void screenshot(const std::string& path);     // Take a screenshot of the current screen
 
 
 private:
@@ -60,7 +62,8 @@ private:
 
     bool m_quit = false; // Whether to kill the window as soon as possible.
 
-    std::chrono::high_resolution_clock::time_point m_start; // Program start timestamp.
+    std::chrono::high_resolution_clock::time_point m_oldTime
+        = std::chrono::high_resolution_clock::now(); // Timestamp of last frame.
 
     std::map<SDL_Keycode, bool> m_keyboard; // Whether a key is pressed.
 };
