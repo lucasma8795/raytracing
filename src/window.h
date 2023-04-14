@@ -41,7 +41,7 @@ private:
     void handleEvents();   // Handle SDL2 emitted events.
     void update();         // Updates program components.
 
-    void screenshot(const std::string& path);     // Take a screenshot of the current screen
+    void screenshot(const std::string& path); // Take a screenshot of the current screen
 
 
 private:

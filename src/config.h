@@ -17,17 +17,17 @@ const std::string PROJECT_TITLE  = "Raytracing";
 const std::string PROJECT_AUTHOR = "Lucas Ma";
 
 // Whether to use full screen
-constexpr bool IS_FULLSCREEN = true;
+constexpr bool IS_FULLSCREEN = false;
 
 // Window attributes.
-constexpr int VIEWPORT_WIDTH  = 1512; // 3024;
-constexpr int VIEWPORT_HEIGHT = 982; // 1984;
+constexpr int VIEWPORT_WIDTH  = 750; // 1512; // 3024;
+constexpr int VIEWPORT_HEIGHT = 500; // 982; // 1984;
 constexpr float ASPECT_RATIO  = static_cast<float>(VIEWPORT_WIDTH) / VIEWPORT_HEIGHT;
 
 // Number of pixels.
 constexpr int NUM_PIXELS = VIEWPORT_WIDTH * VIEWPORT_HEIGHT;
 
-constexpr float CAMERA_MOVESPEED = 5.0f;
+constexpr float CAMERA_MOVESPEED = 2.5f; // units / s
 
 
 } // namespace Raytracer

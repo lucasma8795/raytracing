@@ -67,14 +67,18 @@ Window::Window() noexcept
     std::cout << std::fixed << std::setprecision(3);
 
     // Bind events.
-    g_eventMgr.subscribe(Event::CAMERA_TRANSLATE, [this](glm::vec3 dir, float dt) {
+    // g_eventMgr.subscribe(Event::CAMERA_TRANSLATE, [this](glm::vec3 dir, float dt) {
+    //     m_frameIndex = 1;
+    //     m_accumulated.reset();
+    // });
+    g_eventMgr.subscribe<Events::CameraTranslate>([this](const Events::CameraTranslate& event) {
         m_frameIndex = 1;
         m_accumulated.reset();
     });
 
-    g_eventMgr.subscribe(Event::SCREENSHOT, [this]() {
-        screenshot("out.png");
-    });
+    // g_eventMgr.subscribe(Event::SCREENSHOT, [this]() {
+    //     screenshot("out.png");
+    // });
 }
 
 
@@ -147,7 +151,7 @@ void Window::display()
         {
             // map [0, 1) to [0, 255]
             glm::vec3 colour = m_accumulated.get(x, y) * (1.0f / m_frameIndex);
-            colour = glm::min(toneMap(colour), 0.9999f) * 256.0f;
+            colour = glm::clamp(colour, 0.0f, 0.9999f) * 256.0f;
 
             // RGBA8888 format
             *base++ = SDL_ALPHA_OPAQUE;
@@ -195,29 +199,29 @@ void Window::handleEvents()
 void Window::update()
 {
     auto newTime = std::chrono::high_resolution_clock::now();
-    float dt = (newTime - m_oldTime).count() * 1e-9; // ns to s;
+    float dt = (newTime - m_oldTime).count() * 1e-9; // ns to s
     m_oldTime = newTime;
 
-    glm::vec3 velocity{0.0f};
+    glm::vec3 dir{0.0f};
 
     if (m_keyboard[SDLK_ESCAPE])
         quit();
 
     if (m_keyboard[SDLK_p])
     {
-        g_eventMgr.fire(Event::SCREENSHOT);
+        // g_eventMgr.fire(Event::SCREENSHOT);
         quit();
     }
 
-    if (m_keyboard[SDLK_w])       velocity += DIR_FRONT;
-    if (m_keyboard[SDLK_s])       velocity += DIR_BACK;
-    if (m_keyboard[SDLK_a])       velocity += DIR_LEFT;
-    if (m_keyboard[SDLK_d])       velocity += DIR_RIGHT;
-    if (m_keyboard[SDLK_SPACE])   velocity += DIR_UP;
-    if (m_keyboard[SDLK_LSHIFT])  velocity += DIR_DOWN;
+    if (m_keyboard[SDLK_w])       dir += DIR_FRONT;
+    if (m_keyboard[SDLK_s])       dir += DIR_BACK;
+    if (m_keyboard[SDLK_a])       dir += DIR_LEFT;
+    if (m_keyboard[SDLK_d])       dir += DIR_RIGHT;
+    if (m_keyboard[SDLK_SPACE])   dir += DIR_UP;
+    if (m_keyboard[SDLK_LSHIFT])  dir += DIR_DOWN;
     
-    if (velocity != glm::vec3{0.0f})
-        g_eventMgr.fire(Event::CAMERA_TRANSLATE, velocity, dt);
+    if (dir != glm::vec3{0.0f})
+        g_eventMgr.fire(Events::CameraTranslate{dir, dt});
 }
 
 

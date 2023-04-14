@@ -32,13 +32,7 @@ Camera::Camera() noexcept
     computeRayDirs();
 
     // Subscribe to camera move events.
-    g_eventMgr.subscribe(
-        Event::CAMERA_TRANSLATE,
-        [this](glm::vec3 dir, float dt)
-        {
-            this->translateCamera(dir, dt);
-        }
-    );
+    g_eventMgr.subscribe<Events::CameraTranslate>(std::bind(&Camera::translateCamera, this, _1));
 }
 
 
@@ -54,11 +48,9 @@ Ray Camera::getRay(int x, int y) const
 }
 
 
-void Camera::translateCamera(glm::vec3 dir, float dt)
+void Camera::translateCamera(const Events::CameraTranslate& event)
 {
-    m_origin += dir * dt * CAMERA_MOVESPEED;
-
-    // computeRayDirs();
+    m_origin += event.dir * event.dt * CAMERA_MOVESPEED;
 }
 
 

@@ -1,6 +1,7 @@
 #ifndef CAMERA_H__V0BzYl9Qt8
 #define CAMERA_H__V0BzYl9Qt8
 
+#include "events.h"
 #include "ray.h"
 
 #include <memory>
@@ -31,7 +32,7 @@ public:
 
 private:
     // Camera movements.
-    void translateCamera(glm::vec3 dir, float dt);
+    void translateCamera(const Events::CameraTranslate& event);
 
     // Compute cached ray directions.
     void computeRayDirs();

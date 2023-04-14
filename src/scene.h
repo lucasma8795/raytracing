@@ -14,7 +14,7 @@ namespace Raytracer
 {
 
 
-// An object pointer
+// An object pointer.
 template<class T>
 concept ObjectPtr = std::is_convertible_v<T, std::shared_ptr<Object>>;
 
