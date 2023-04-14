@@ -22,10 +22,10 @@ A simple real-time ray tracer with a controllable camera.
 ```
 
 ### Usage
-`Esc` - Quit
-`W`, `A`, `S`, `D` - Move forward, backward, left, right
-`Space`, `LShift` - Move up, down
-`P` - Take a screenshot (saved to `out.png`) and quit
+* `Esc` - Quit
+* `W`, `A`, `S`, `D` - Move forward, backward, left, right
+* `Space`, `LShift` - Move up, down
+* `P` - Take a screenshot (saved to `out.png`) and quit
 
 ## Features
 * Moveable camera
