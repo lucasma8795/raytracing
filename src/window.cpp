@@ -76,9 +76,11 @@ Window::Window() noexcept
         m_accumulated.reset();
     });
 
-    // g_eventMgr.subscribe(Event::SCREENSHOT, [this]() {
-    //     screenshot("out.png");
-    // });
+    g_eventMgr.subscribe<Events::Screenshot>([this](const Events::Screenshot& event) {
+        screenshot(event.path);
+    });
+
+    // g_eventMgr.subscribe<Events::Screenshot>(std::bind(&Window::screenshot, this, _1));
 }
 
 
@@ -209,7 +211,7 @@ void Window::update()
 
     if (m_keyboard[SDLK_p])
     {
-        // g_eventMgr.fire(Event::SCREENSHOT);
+        g_eventMgr.fire(Events::Screenshot{"out.png"});
         quit();
     }
 

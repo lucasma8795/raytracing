@@ -23,6 +23,9 @@ namespace Events
 
     // window resize
     struct WindowResize { int width; int height; };
+
+    // miscellaneous
+    struct Screenshot { std::string path; };
 }
 
 
