@@ -1,9 +1,9 @@
 # Raytracing
 
-A simple real-time ray tracer with a controllable camera.
+A simple ray tracer with a controllable camera.
 
 ## Demo
-![demo image](demo_light.png)
+![demo image](demo.png)
 
 ## Getting Started
 
@@ -31,7 +31,6 @@ A simple real-time ray tracer with a controllable camera.
 ## Features
 * Moveable camera (translation, rotation)
 * Accumulation - one sample per pixel per frame, image quality improves over time
-* Anti-aliasing
 * Materials - diffuse (lambertian), metal, glass (dielectric), light source
 * Geometry - spheres only
 * Texture - solid colour, image texture
@@ -46,6 +45,7 @@ A simple real-time ray tracer with a controllable camera.
 * Object file loading
 * Mist (participating media)
 * Perlin noise texture
+* Anti-aliasing
 * [ImGui](https://github.com/ocornut/imgui) to edit scene during runtime
 
 ## Acknowledgments

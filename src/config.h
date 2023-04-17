@@ -17,11 +17,11 @@ const std::string PROJECT_TITLE  = "Raytracing";
 const std::string PROJECT_AUTHOR = "Lucas Ma";
 
 // Whether to use full screen
-constexpr bool IS_FULLSCREEN = false;
+constexpr bool IS_FULLSCREEN = true;
 
 // Window attributes.
-constexpr size_t VIEWPORT_WIDTH  = 900; // 1512; // 3024;
-constexpr size_t VIEWPORT_HEIGHT = 600; // 982; // 1984;
+constexpr size_t VIEWPORT_WIDTH  = 1512; // 3024;
+constexpr size_t VIEWPORT_HEIGHT = 982; // 1984;
 constexpr float ASPECT_RATIO  = static_cast<float>(VIEWPORT_WIDTH) / VIEWPORT_HEIGHT;
 
 // Number of pixels.

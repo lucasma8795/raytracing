@@ -7,6 +7,7 @@
 #include "../textures/includes.h"
 
 #include <memory>
+#include <random>
 
 
 namespace Raytracer
@@ -15,6 +16,10 @@ namespace Raytracer
 
 Scene testScene()
 {
+    std::random_device rd;
+    std::mt19937 rng(rd());
+    std::uniform_real_distribution<float> dist(0.0f, 1.0f);
+
     #define make std::make_shared
     using namespace Colours;
 
@@ -22,30 +27,48 @@ Scene testScene()
 
     // textures
     auto earthTexture = make<ImageTexture>("./assets/earth.png");
-    auto moonTexture  = make<ImageTexture>("./assets/moon.png");
 
     // materials
-    auto solidEarth    = make<DiffuseLight>(earthTexture);
-    auto metallicRed   = make<Metal>(SALMON, 1.0f);
-    auto glass         = make<Dielectric>(2.42f);
-    auto lightSource   = make<DiffuseLight>(moonTexture);
-    auto floorSurface  = make<Metal>(DARK_GRAY, 0.1f);
-    auto diffuseViolet = make<Lambertian>(VIOLET);
+    auto glass        = make<Dielectric>(2.42f);
+    auto metal        = make<Metal>(LIGHT_GRAY, 0.0f);
+    auto diffuseEarth = make<Lambertian>(earthTexture);
+    auto floor        = make<Lambertian>(DARK_GRAY);
 
-    // objects
-    auto sphere1 = make<Sphere>(glm::vec3{0.0f, -0.1f, 5.0f}, 0.9f, solidEarth);
-    auto sphere2 = make<Sphere>(glm::vec3{2.0f, -0.1f, 5.0f}, 0.9f, metallicRed);
-    auto sphere3 = make<Sphere>(glm::vec3{-2.0f, -0.1f, 5.0f}, 0.9f, glass);
-    auto sphere4 = make<Sphere>(glm::vec3{-2.0f, -0.1f, 8.0f}, 0.9f, diffuseViolet);
-    // auto sphere3 = make<Sphere>(glm::vec3{-0.65f, -0.1f, 2.0f}, 0.9f, glass);
-    // auto sphere4 = make<Sphere>(glm::vec3{-2.0f, -0.1f, 3.0f}, -0.72f, glass);
+    // spheres
+    auto leftSphere   = make<Sphere>(glm::vec3{-2.5f, +0.0f, +5.0f}, 1.0f, diffuseEarth);
+    auto middleSphere = make<Sphere>(glm::vec3{+0.0f, +0.0f, +5.0f}, 1.0f, glass);
+    auto rightSphere  = make<Sphere>(glm::vec3{+2.5f, +0.0f, +5.0f}, 1.0f, metal);
+    auto floorSphere  = make<Sphere>(glm::vec3{+0.0f, -1001.0f, +0.0f}, 1000.0f, floor);
 
-    auto lightSphere = make<Sphere>(glm::vec3{0.0f, -0.5f, 3.0f}, 0.1f, lightSource);
+    // random small spheres
+    constexpr float SPHERE_RADIUS = 0.15f;
+    for (int i = -5; i <= 5; ++i)
+    {
+        for (int j = 0; j <= 10; ++j)
+        {
+            float rand = dist(rng);
 
-    auto floorSphere = make<Sphere>(glm::vec3{0.0f, -1002.0f, 0.0f}, 1001.0f, floorSurface);
+            std::shared_ptr<Material> material;
+            auto centre = glm::vec3{i + dist(rng), -1.0f + SPHERE_RADIUS, j + dist(rng)};
+            auto albedo = glm::vec3{dist(rng), dist(rng), dist(rng)};
+            albedo *= albedo;
+
+            if (rand < 0.6)
+                material = make<Lambertian>(albedo);
+
+            else if (rand < 0.9)
+                material = make<Metal>(albedo, dist(rng));
+            
+            else
+                material = glass;
+
+            auto sphere = make<Sphere>(centre, SPHERE_RADIUS, material);
+            scene.add(sphere);
+        }
+    }
 
     // add to scene
-    scene.add(sphere1, sphere2, sphere3, sphere4, floorSphere, lightSphere);
+    scene.add(leftSphere, middleSphere, rightSphere, floorSphere);
 
     return scene;
 
