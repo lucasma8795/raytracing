@@ -47,6 +47,7 @@ private:
     void onScreenshot(const Events::Screenshot& event);
     void onCameraTranslate(const Events::CameraTranslate& event);
     void onCameraRotate(const Events::CameraRotate& event);
+    void onWindowResize(const Events::WindowResize& event);
 
 
 private:

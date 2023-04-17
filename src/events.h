@@ -119,7 +119,7 @@ void EventManager::subscribe(call_type<EventType> callback)
     if (id >= m_callbacks.size())
         m_callbacks.resize(id + 1);
 
-    m_callbacks.at(id).push_back(CallbackWrapper<EventType>(callback));
+    m_callbacks[id].push_back(CallbackWrapper<EventType>(callback));
 }
 
 
@@ -133,9 +133,8 @@ void EventManager::fire(const EventType& event)
     if (id >= m_callbacks.size())
         m_callbacks.resize(id + 1);
 
-    for (const auto& callback: m_callbacks.at(id))
+    for (const auto& callback: m_callbacks[id])
         callback(eventWrapper);
-        // if (callback) callback(eventWrapper);
 }
 
 

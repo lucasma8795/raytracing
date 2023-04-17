@@ -56,7 +56,7 @@ inline void Image::reset()
 
 inline glm::vec3 Image::get(size_t x, size_t y) const
 {
-    return m_pixels.at(y * m_width + x);
+    return m_pixels[y * m_width + x];
 }
 
 
@@ -68,13 +68,13 @@ inline glm::vec3 Image::get(size_t x, size_t y) const
 
 inline void Image::set(size_t x, size_t y, glm::vec3 colour)
 {
-    m_pixels.at(y * m_width + x) = colour;
+    m_pixels[y * m_width + x] = colour;
 }
 
 
 inline void Image::add(size_t x, size_t y, glm::vec3 colour)
 {
-    m_pixels.at(y * m_width + x) += colour;
+    m_pixels[y * m_width + x] += colour;
 }
 
 

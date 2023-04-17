@@ -39,7 +39,7 @@ private:
 
 private:
     static constexpr float MOVE_SPEED     = 4.0f; // units/sec
-    static constexpr float ROTATION_SPEED = 0.3f; // rad/sec
+    static constexpr float ROTATION_SPEED = 0.5f; // rad/sec
 
     static constexpr float NEAR_CLIP = 1.0f;
     static constexpr float FAR_CLIP  = 100.0f;
@@ -52,7 +52,7 @@ private:
     glm::vec3 m_origin{0.0f}; // Camera position.
 
     glm::vec3 m_forwardDirection{0.0f, 0.0f, 1.0f};
-    glm::vec3 m_upDirection{0.0f, 1.0f, 0.0f};
+    static constexpr glm::vec3 m_upDirection{0.0f, 1.0f, 0.0f};
     glm::vec3 m_rightDirection{1.0f, 0.0f, 0.0f};
 
     // Projection matrixes.

@@ -43,14 +43,14 @@ Window::Window() noexcept
     SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "best");
 
     // Capture the mouse.
-    SDL_SetRelativeMouseMode(SDL_TRUE);
+    // SDL_SetRelativeMouseMode(SDL_TRUE);
     
     // Create window and renderer.
     m_window = SDL_CreateWindow(
         PROJECT_TITLE.c_str(),
         SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
         VIEWPORT_WIDTH, VIEWPORT_HEIGHT,
-        IS_FULLSCREEN ? SDL_WINDOW_FULLSCREEN : 0
+        (IS_FULLSCREEN ? SDL_WINDOW_FULLSCREEN : 0) | SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE
     );
     if (!m_window)
         fatal("SDL2 window failed to initialize!");
@@ -73,6 +73,7 @@ Window::Window() noexcept
 
     // Bind events.
     g_eventMgr.subscribe<Events::CameraTranslate>(std::bind(&Window::onCameraTranslate, this, _1));
+    g_eventMgr.subscribe<Events::CameraRotate>(std::bind(&Window::onCameraRotate, this, _1));
     g_eventMgr.subscribe<Events::Screenshot>(std::bind(&Window::onScreenshot, this, _1));
 }
 
@@ -112,10 +113,7 @@ void Window::render()
     {
         for (size_t x = 0; x < VIEWPORT_WIDTH; ++x)
         {
-            // Ray pointing from camera origin to screen coordinates.
             Ray cameraRay = m_camera.getRay(x, y);
-
-            // Trace ray colour.
             m_accumulated.add(x, y, m_scene.raytrace(cameraRay));
         }
     }
@@ -187,6 +185,10 @@ void Window::handleEvents()
         case SDL_KEYUP:
             m_keyboard[m_event.key.keysym.sym] = false;
             break;
+
+        case SDL_WINDOWEVENT_RESIZED:
+            g_eventMgr.fire(Events::WindowResize{m_event.window.data1, m_event.window.data2});
+            break;
     }
 }
 
@@ -219,6 +221,11 @@ void Window::update()
     
     if (dir != glm::vec3{0.0f})
         g_eventMgr.fire(Events::CameraTranslate{glm::normalize(dir), dt});
+
+    if (m_keyboard[SDLK_RIGHT])
+        g_eventMgr.fire(Events::CameraRotate{DIR_RIGHT, dt});
+    else if (m_keyboard[SDLK_LEFT])
+        g_eventMgr.fire(Events::CameraRotate{DIR_LEFT, dt});
 
     g_eventMgr.fire(Events::Update{});
 
@@ -256,6 +263,23 @@ void Window::onScreenshot(const Events::Screenshot& event)
 
 void Window::onCameraTranslate(const Events::CameraTranslate& event)
 {
+    // reset accumulation
+    m_frameIndex = 1;
+    m_accumulated.reset();
+}
+
+
+void Window::onCameraRotate(const Events::CameraRotate& event)
+{
+    // reset accumulation
+    m_frameIndex = 1;
+    m_accumulated.reset();
+}
+
+
+void Window::onWindowResize(const Events::WindowResize& event)
+{
+    // reset accumulation
     m_frameIndex = 1;
     m_accumulated.reset();
 }

@@ -43,7 +43,7 @@ Camera::Camera(size_t width, size_t height) noexcept
 
 Ray Camera::getRay(size_t x, size_t y) const
 {
-    return Ray(m_origin, m_rayDirs.at(y * m_width + x));
+    return Ray(m_origin, m_rayDirs[y * m_width + x]);
 }
 
 
@@ -80,7 +80,7 @@ void Camera::computeProjection()
 
 void Camera::computeView()
 {
-    m_view = glm::lookAt(m_origin, m_origin + m_forwardDirection, glm::vec3{0.0f, 1.0f, 0.0f});
+    m_view = glm::lookAt(m_origin, m_origin + m_forwardDirection, m_upDirection);
     m_inverseView = glm::inverse(m_view);
 }
 
@@ -95,11 +95,13 @@ void Camera::onCameraTranslate(const Events::CameraTranslate& event)
 
 void Camera::onCameraRotate(const Events::CameraRotate& event)
 {
-    float pitchDelta = event.rotation.y * ROTATION_SPEED;
-    float yawDelta = event.rotation.x * ROTATION_SPEED;
+    float pitchDelta = event.rotation.y * ROTATION_SPEED * event.dt;
+    float yawDelta = event.rotation.x * ROTATION_SPEED * event.dt;
 
-    glm::quat q = glm::normalize(glm::cross(glm::angleAxis(-pitchDelta, m_rightDirection),
-    	    glm::angleAxis(-yawDelta, glm::vec3(0.0f, 1.0f, 0.0f))));
+    glm::quat q = glm::normalize(glm::cross(
+        glm::angleAxis(-pitchDelta, m_rightDirection),
+        glm::angleAxis(-yawDelta, m_upDirection)
+    ));
     
     m_forwardDirection = glm::rotate(q, m_forwardDirection);
     m_rightDirection = glm::cross(m_forwardDirection, m_upDirection);

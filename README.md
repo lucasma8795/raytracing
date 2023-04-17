@@ -25,10 +25,11 @@ A simple real-time ray tracer with a controllable camera.
 * `Esc` - Quit
 * `W`, `A`, `S`, `D` - Move forward, backward, left, right
 * `Space`, `LShift` - Move up, down
+* `←`, `→` - Rotate left, right
 * `P` - Take a screenshot (saved to `out.png`) and quit
 
 ## Features
-* Moveable camera
+* Moveable camera (translation, rotation)
 * Accumulation - one sample per pixel per frame, image quality improves over time
 * Anti-aliasing
 * Materials - diffuse (lambertian), metal, glass (dielectric), light source
@@ -37,8 +38,8 @@ A simple real-time ray tracer with a controllable camera.
 
 ## Todo list
 * **Support window resize**
-* **(Mouse-controlled) camera rotation**
 * **Figure out why multi-threading is making code slower instead of faster**
+* Mouse-controlled camera rotation
 * Depth of field (camera focus)
 * Rectangles and cuboids
 * Axis aligned bounding box (AABB)
