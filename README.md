@@ -30,6 +30,7 @@ A simple real-time ray tracer with a controllable camera.
 ## Features
 * Moveable camera
 * Accumulation - one sample per pixel per frame, image quality improves over time
+* Anti-aliasing
 * Materials - diffuse (lambertian), metal, glass (dielectric), light source
 * Geometry - spheres only
 * Texture - solid colour, image texture
@@ -37,6 +38,8 @@ A simple real-time ray tracer with a controllable camera.
 ## Todo list
 * **Support window resize**
 * **(Mouse-controlled) camera rotation**
+* **Figure out why multi-threading is making code slower instead of faster**
+* Depth of field (camera focus)
 * Rectangles and cuboids
 * Axis aligned bounding box (AABB)
 * Object file loading

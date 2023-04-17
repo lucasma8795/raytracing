@@ -13,7 +13,7 @@ class Ray
 {
 public:
     // Construct a new ray.
-    explicit Ray(glm::vec3 origin, glm::vec3 dir) noexcept;
+    explicit Ray(const glm::vec3& origin, const glm::vec3& dir) noexcept;
     explicit Ray() noexcept;
 
     // Returns origin + t * dir.

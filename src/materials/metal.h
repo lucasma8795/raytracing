@@ -22,6 +22,9 @@ public:
     explicit Metal(glm::vec3 albedo, float fuzz) noexcept;
     explicit Metal(std::shared_ptr<Texture> texture, float fuzz) noexcept;
 
+    // Destructor.
+    virtual ~Metal() = default;
+
     // Whether if there is a scatter ray.
     virtual bool scatter(
         const Ray& incident, const HitPayload& payload, glm::vec3& attenuation, Ray& scatter

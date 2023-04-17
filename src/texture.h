@@ -12,6 +12,8 @@ namespace Raytracer
 class Texture
 {
 public:
+    virtual ~Texture() = default;
+
     // Gets the colour of the texture at coordinates (u, v).
     virtual glm::vec3 colourAt(float u, float v, const glm::vec3& p) const = 0;
 };

@@ -1,6 +1,6 @@
 #include "dielectric.h"
 
-#include "../random.h"
+#include "../math.h"
 #include "../types.h"
 
 #include <algorithm>

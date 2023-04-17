@@ -20,6 +20,9 @@ public:
     // Create an image texture.
     explicit ImageTexture(const std::string& path) noexcept;
 
+    // Destructor.
+    virtual ~ImageTexture() = default;
+
     // Returns the colour of the image texture at the given coordinates.
     virtual glm::vec3 colourAt(float u, float v, const glm::vec3& p) const override;
 

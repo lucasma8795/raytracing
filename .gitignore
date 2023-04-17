@@ -6,3 +6,5 @@ misc
 *.d
 
 raytrace
+
+out.png

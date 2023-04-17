@@ -16,6 +16,9 @@ public:
     // Create a solid colour texture.
     explicit SolidColour(glm::vec3 albedo) noexcept;
 
+    // Destructor.
+    virtual ~SolidColour() = default;
+
     // Returns the colour of the solid texture.
     virtual glm::vec3 colourAt(float u, float v, const glm::vec3& p) const override;
 

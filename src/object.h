@@ -16,6 +16,8 @@ namespace Raytracer
 class Object
 {
 public:
+    virtual ~Object() = default;
+
     // Whether the given ray intersects us.
     virtual bool hit(const Ray& ray, float t_min, float t_max, HitPayload& payload) const = 0;
 

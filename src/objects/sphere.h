@@ -18,6 +18,9 @@ public:
     // Construct a new sphere.
     explicit Sphere(glm::vec3 centre, float radius, std::shared_ptr<Material> material) noexcept;
 
+    // Destructor.
+    virtual ~Sphere() = default;
+
     // Whether the given ray intersects us.
     bool hit(const Ray& ray, float t_min, float t_max, HitPayload& payload) const override;
 

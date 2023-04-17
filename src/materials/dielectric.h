@@ -18,6 +18,9 @@ public:
     // Create a glass material.
     explicit Dielectric(float refractiveIndex) noexcept;
 
+    // Destructor.
+    virtual ~Dielectric() = default;
+
     // Split into either a reflect or a refract ray.
     virtual bool scatter(
         const Ray& incident, const HitPayload& payload, glm::vec3& attenuation, Ray& scatter

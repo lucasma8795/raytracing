@@ -1,9 +1,11 @@
 #include "metal.h"
 
-#include "../random.h"
+#include "../math.h"
 #include "../textures/solid_colour.h"
 #include "../texture.h"
 #include "../types.h"
+
+#include <memory>
 
 #include <glm/glm.hpp>
 

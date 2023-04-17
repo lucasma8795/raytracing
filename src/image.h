@@ -2,9 +2,8 @@
 #define IMAGE_H__9KxNHSAPz4
 
 #include <cassert>
-#include <cstring> // for memset()
-#include <memory>
 #include <string>
+#include <vector>
 
 #include <glm/glm.hpp>
 
@@ -19,48 +18,45 @@ class Image
 public:
     // Create a new image.
     explicit Image() noexcept;
-    explicit Image(int width, int height) noexcept;
+    explicit Image(size_t width, size_t height) noexcept;
     explicit Image(const std::string& path) noexcept;
 
     // Reset the image to all black.
     void reset();
 
     // Get pixel colour at a given position.
-    glm::vec3 get(int x, int y) const;
-    glm::vec3 get(float x, float y) const;
+    glm::vec3 get(size_t x, size_t y) const;
+    // glm::vec3 get(float x, float y) const;
 
     // Add to pixel colour at a given position.
-    void add(int x, int y, glm::vec3 colour);
+    void add(size_t x, size_t y, glm::vec3 colour);
     
     // Set pixel colour at a given position.
-    void set(int x, int y, glm::vec3 colour);
+    void set(size_t x, size_t y, glm::vec3 colour);
 
     // Getter for width and height.
-    int width() const;
-    int height() const;
+    size_t width() const;
+    size_t height() const;
 
 
 private:
-    std::unique_ptr<glm::vec3[]> m_pixels;
+    std::vector<glm::vec3> m_pixels;
 
-    int m_width;  // Width of the image, in pixels.
-    int m_height; // Height of the image, in pixels.
+    size_t m_width = 0U;  // Width of the image, in pixels.
+    size_t m_height = 0U; // Height of the image, in pixels.
 };
 
 
 inline void Image::reset()
 {
     // Fill all elements with black.
-    std::fill_n(m_pixels.get(), m_width * m_height, glm::vec3{0.0f});
+    std::fill(m_pixels.begin(), m_pixels.end(), glm::vec3{0.0f});
 }
 
 
-inline glm::vec3 Image::get(int x, int y) const
+inline glm::vec3 Image::get(size_t x, size_t y) const
 {
-    // Bounds checking
-    assert(x >= 0 && x < m_width && y >= 0 && y < m_height);
-
-    return m_pixels[y * m_width + x];
+    return m_pixels.at(y * m_width + x);
 }
 
 
@@ -70,31 +66,25 @@ inline glm::vec3 Image::get(int x, int y) const
 // }
 
 
-inline void Image::set(int x, int y, glm::vec3 colour)
+inline void Image::set(size_t x, size_t y, glm::vec3 colour)
 {
-    // Bounds checking
-    assert(x >= 0 && x < m_width && y >= 0 && y < m_height);
-    
-    m_pixels[y * m_width + x] = colour;
+    m_pixels.at(y * m_width + x) = colour;
 }
 
 
-inline void Image::add(int x, int y, glm::vec3 colour)
+inline void Image::add(size_t x, size_t y, glm::vec3 colour)
 {
-    // Bounds checking
-    assert(x >= 0 && x < m_width && y >= 0 && y < m_height);
-    
-    m_pixels[y * m_width + x] += colour;
+    m_pixels.at(y * m_width + x) += colour;
 }
 
 
-inline int Image::width() const
+inline size_t Image::width() const
 {
     return m_width;
 }
 
 
-inline int Image::height() const
+inline size_t Image::height() const
 {
     return m_height;
 }

@@ -1,10 +1,10 @@
-#ifndef CAMERA_H__V0BzYl9Qt8
-#define CAMERA_H__V0BzYl9Qt8
+#ifndef CAMERA_H_NEW__V0BzYl9Qt8
+#define CAMERA_H_NEW__V0BzYl9Qt8
 
 #include "events.h"
 #include "ray.h"
 
-#include <memory>
+#include <vector>
 
 #include <glm/glm.hpp>
 
@@ -16,44 +16,55 @@ namespace Raytracer
 class Camera
 {
 public:
-    // Create a new camera.
-    explicit Camera() noexcept;
-
-    // Delete copy constructor and assignment operator.
-    Camera(const Camera&) = delete;
-    Camera& operator=(Camera const&) = delete;
-
-    // Update the camera.
-    // void update(float dt);
+    // Create a camera object.
+    Camera() noexcept;
+    explicit Camera(size_t width, size_t height) noexcept;
 
     // Get the ray pointing from camera origin to given screen coordinates.
-    Ray getRay(int x, int y) const;
+    Ray getRay(size_t x, size_t y) const;
 
 
 private:
-    // Camera movements.
-    void translateCamera(const Events::CameraTranslate& event);
-
-    // Compute cached ray directions.
+    // Precomputation.
     void computeRayDirs();
+    void computeProjection();
+    void computeView();
+
+    // Event handlers.
+    void onCameraTranslate(const Events::CameraTranslate& event);
+    void onCameraRotate(const Events::CameraRotate& event);
+    void onWindowResize(const Events::WindowResize& event);
+    void onUpdate(const Events::Update& event);
 
 
 private:
-    glm::vec3 m_origin; // Origin of the camera.
+    static constexpr float MOVE_SPEED     = 4.0f; // units/sec
+    static constexpr float ROTATION_SPEED = 0.3f; // rad/sec
 
-    int m_focalLength = 1.0f;
+    static constexpr float NEAR_CLIP = 1.0f;
+    static constexpr float FAR_CLIP  = 100.0f;
 
-    // glm::vec3 m_forwardDirection; // Direction that the camera is pointing at.
-    // glm::vec3 m_rightDirection;   // Right direction relative to camera position.
+    static constexpr float VERTICAL_FOV = 45.0f;
 
-    // static constexpr glm::vec3 UP_DIRECTION{0.0f, 1.0f, 0.0f}; // Fixed up direction. (i.e.: no tilting)
+    size_t m_width = 0U;  // Viewport width.
+    size_t m_height = 0U; // Viewport height.
 
-    // static constexpr float m_verticalFOV = 45.0f; // Vertical field of view.
+    glm::vec3 m_origin{0.0f}; // Camera position.
 
-    // float m_nearClip; // Near clip plane.
-    // float m_farClip;  // Far clip plane.
+    glm::vec3 m_forwardDirection{0.0f, 0.0f, 1.0f};
+    glm::vec3 m_upDirection{0.0f, 1.0f, 0.0f};
+    glm::vec3 m_rightDirection{1.0f, 0.0f, 0.0f};
 
-    std::unique_ptr<glm::vec3[]> m_rayDirs; // Cached ray directions for each pixel.
+    // Projection matrixes.
+    glm::mat4 m_projection{1.0f};
+    glm::mat4 m_inverseProjection{1.0f};
+    glm::mat4 m_view{1.0f};
+    glm::mat4 m_inverseView{1.0f};
+
+    bool m_moved = false; // Whether a camera has moved and needs updating.
+
+public:
+    std::vector<glm::vec3> m_rayDirs; // Cached ray directions.
 };
 
 

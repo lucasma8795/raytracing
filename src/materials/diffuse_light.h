@@ -22,6 +22,9 @@ public:
     explicit DiffuseLight(std::shared_ptr<Texture> texture) noexcept;
     explicit DiffuseLight(std::shared_ptr<Texture> texture, float scale) noexcept;
 
+    // Destructor.
+    virtual ~DiffuseLight() = default;
+
     // Always does not produce a scatter ray.
     virtual bool scatter(
         const Ray& incident, const HitPayload& payload, glm::vec3& attenuation, Ray& scatter

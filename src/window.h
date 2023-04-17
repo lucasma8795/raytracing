@@ -4,10 +4,12 @@
 #include "image.h"
 
 #include "camera.h"
+#include "config.h"
+#include "events.h"
 #include "scene.h"
 
 #include <chrono>
-#include <map>
+#include <unordered_map>
 #include <memory>
 
 #include <SDL2/SDL.h>
@@ -41,15 +43,17 @@ private:
     void handleEvents();   // Handle SDL2 emitted events.
     void update();         // Updates program components.
 
-    void screenshot(const std::string& path); // Take a screenshot of the current screen
+    // event handlers
+    void onScreenshot(const Events::Screenshot& event);
+    void onCameraTranslate(const Events::CameraTranslate& event);
+    void onCameraRotate(const Events::CameraRotate& event);
 
 
 private:
-    Camera m_camera; // Rendering camera.
+    Camera m_camera{VIEWPORT_WIDTH, VIEWPORT_HEIGHT}; // Rendering camera.
 
     Scene m_scene; // Scene to render.
     
-    // std::unique_ptr<Image> m_image; // Image buffer.
     Image m_accumulated; // Accumulated image buffer.
 
     SDL_Texture* m_buffer;
@@ -62,10 +66,7 @@ private:
 
     bool m_quit = false; // Whether to kill the window as soon as possible.
 
-    std::chrono::high_resolution_clock::time_point m_oldTime
-        = std::chrono::high_resolution_clock::now(); // Timestamp of last frame.
-
-    std::map<SDL_Keycode, bool> m_keyboard; // Whether a key is pressed.
+    std::unordered_map<SDL_Keycode, bool> m_keyboard; // Whether a key is pressed.
 };
 
 

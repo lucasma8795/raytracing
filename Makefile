@@ -38,10 +38,11 @@ LDFLAGS = -flto=auto -pthread
 -include $(OBJECTS:.o=.d)
 
 # compiler flags
-CXXFLAGS  = -Ofast -Wall -Wextra -Wpedantic -Werror
+CXXFLAGS = -Ofast -Wall -Wextra -Wpedantic -Werror
 CXXFLAGS += -std=c++23 -march=native
-CXXFLAGS += -flto=auto -fopenmp # -pthread
+CXXFLAGS += -flto=auto # -fopenmp # -pthread
 CXXFLAGS += -fno-exceptions -DNDEBUG
+# CXXFLAGS += -fsanitize=undefined
 CXXFLAGS += -Wno-unused-variable -Wno-unused-parameter
 
 # build rules

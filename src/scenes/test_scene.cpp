@@ -30,18 +30,19 @@ Scene testScene()
     auto glass         = make<Dielectric>(2.42f);
     auto lightSource   = make<DiffuseLight>(moonTexture);
     auto floorSurface  = make<Metal>(DARK_GRAY, 0.1f);
+    auto diffuseViolet = make<Lambertian>(VIOLET);
 
     // objects
-    auto sphere1 = make<Sphere>(glm::vec3{0.0f, -0.1f, 3.0f}, 0.9f, solidEarth);
-    auto sphere2 = make<Sphere>(glm::vec3{2.0f, -0.1f, 3.0f}, 0.9f, metallicRed);
-    auto sphere3 = make<Sphere>(glm::vec3{-2.0f, -0.1f, 3.0f}, 0.9f, glass);
-    auto sphere4 = make<Sphere>(glm::vec3{-2.0f, -0.1f, 6.0f}, 0.9f, metallicRed);
+    auto sphere1 = make<Sphere>(glm::vec3{0.0f, -0.1f, 5.0f}, 0.9f, solidEarth);
+    auto sphere2 = make<Sphere>(glm::vec3{2.0f, -0.1f, 5.0f}, 0.9f, metallicRed);
+    auto sphere3 = make<Sphere>(glm::vec3{-2.0f, -0.1f, 5.0f}, 0.9f, glass);
+    auto sphere4 = make<Sphere>(glm::vec3{-2.0f, -0.1f, 8.0f}, 0.9f, diffuseViolet);
     // auto sphere3 = make<Sphere>(glm::vec3{-0.65f, -0.1f, 2.0f}, 0.9f, glass);
     // auto sphere4 = make<Sphere>(glm::vec3{-2.0f, -0.1f, 3.0f}, -0.72f, glass);
 
-    auto lightSphere = make<Sphere>(glm::vec3{0.0f, -0.5f, 1.5f}, 0.1f, lightSource);
+    auto lightSphere = make<Sphere>(glm::vec3{0.0f, -0.5f, 3.0f}, 0.1f, lightSource);
 
-    auto floorSphere = make<Sphere>(glm::vec3{0.0f, -102.0f, 0.0f}, 101.0f, floorSurface);
+    auto floorSphere = make<Sphere>(glm::vec3{0.0f, -1002.0f, 0.0f}, 1001.0f, floorSurface);
 
     // add to scene
     scene.add(sphere1, sphere2, sphere3, sphere4, floorSphere, lightSphere);

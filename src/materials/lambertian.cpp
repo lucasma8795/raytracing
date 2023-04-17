@@ -1,11 +1,12 @@
 #include "lambertian.h"
 
-#include "../random.h"
+#include "../math.h"
 #include "../textures/solid_colour.h"
 #include "../texture.h"
 #include "../types.h"
 
 #include <algorithm>
+#include <memory>
 
 #include <glm/glm.hpp>
 

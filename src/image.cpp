@@ -17,11 +17,11 @@ namespace Raytracer
 Image::Image() noexcept {}
 
 
-Image::Image(int width, int height) noexcept
+Image::Image(size_t width, size_t height) noexcept
     : m_width{width}, m_height{height}
 {
     // allocate memory for pixels
-    m_pixels = std::make_unique_for_overwrite<glm::vec3[]>(width * height);
+    m_pixels.resize(width * height);
 }
 
 
@@ -35,11 +35,11 @@ Image::Image(const std::string& path) noexcept
     // allocate memory for pixels
     m_width = surface->w;
     m_height = surface->h;
-    m_pixels = std::make_unique_for_overwrite<glm::vec3[]>(m_width * m_height);
+    m_pixels.resize(m_width * m_height);
 
-    for (int y = 0; y < m_height; ++y)
+    for (size_t y = 0; y < m_height; ++y)
     {
-        for (int x = 0; x < m_width; ++x)
+        for (size_t x = 0; x < m_width; ++x)
         {
             glm::vec3 colour;
 
@@ -47,7 +47,7 @@ Image::Image(const std::string& path) noexcept
             int bpp = surface->format->BytesPerPixel;
             uint8_t* base = static_cast<uint8_t*>(surface->pixels) + y * surface->pitch + x * bpp;
 
-            // WARN: this will break with textures loaded in a different format!!!
+            // WARN: this will break with textures with a different pixelformat!!!
             colour.r = *base++ / 255.0f;
             colour.g = *base++ / 255.0f;
             colour.b = *base++ / 255.0f;

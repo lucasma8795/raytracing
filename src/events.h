@@ -3,6 +3,7 @@
 
 #include <functional>
 #include <string>
+#include <vector>
 
 #include <glm/glm.hpp>
 
@@ -14,12 +15,12 @@ namespace Raytracer
 // Event types and their required arguments.
 namespace Events
 {
-    // test event
-    struct Dummy { std::string msg; };
+    // general
+    struct Update { }; // Fired after all events.
 
     // camera movements
-    struct CameraTranslate { glm::vec3 dir; float dt; };
-    struct CameraRotate {  }; // TODO!
+    struct CameraTranslate { glm::vec3 direction; float dt; };
+    struct CameraRotate { glm::vec3 rotation; float dt; };
 
     // window resize
     struct WindowResize { int width; int height; };
@@ -42,7 +43,7 @@ template<typename EventType>
 class Event: public BaseEvent
 {
 public:
-    Event(const EventType& event) noexcept;
+    explicit Event(const EventType& event) noexcept;
 
     static size_t getID();
 
@@ -118,7 +119,7 @@ void EventManager::subscribe(call_type<EventType> callback)
     if (id >= m_callbacks.size())
         m_callbacks.resize(id + 1);
 
-    m_callbacks[id].push_back(CallbackWrapper<EventType>(callback));
+    m_callbacks.at(id).push_back(CallbackWrapper<EventType>(callback));
 }
 
 
@@ -132,8 +133,9 @@ void EventManager::fire(const EventType& event)
     if (id >= m_callbacks.size())
         m_callbacks.resize(id + 1);
 
-    for (auto& callback: m_callbacks[id])
+    for (const auto& callback: m_callbacks.at(id))
         callback(eventWrapper);
+        // if (callback) callback(eventWrapper);
 }
 
 

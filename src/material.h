@@ -15,6 +15,8 @@ namespace Raytracer
 class Material
 {
 public:
+    virtual ~Material() = default;
+
     // Whether the material produces a scatter ray, and if so, provides the direction of scatter.
     virtual bool scatter(
         const Ray& incident, const HitPayload& payload, glm::vec3& attenuation, Ray& scatter

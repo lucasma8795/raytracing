@@ -22,6 +22,9 @@ public:
     explicit Lambertian(glm::vec3 albedo) noexcept;
     explicit Lambertian(std::shared_ptr<Texture> texture) noexcept;
 
+    // Destructor.
+    virtual ~Lambertian() = default;
+
     // Whether there is a scatter ray.
     virtual bool scatter(
         const Ray& incident, const HitPayload& payload, glm::vec3& attenuation, Ray& scatter

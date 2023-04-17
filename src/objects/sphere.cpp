@@ -1,5 +1,6 @@
 #include "sphere.h"
 
+#include "../math.h"
 #include "../types.h"
 
 #include <cmath>
@@ -54,8 +55,8 @@ bool Sphere::hit(const Ray& ray, float t_min, float t_max, HitPayload& payload) 
 
 void Sphere::sphericalCoords(const glm::vec3& p, float& u, float& v)
 {
-    float theta = std::acos(-p.y);
-    float phi = std::atan2(-p.z, p.x) + glm::pi<float>();
+    float theta = acosf(-p.y);
+    float phi = atan2f(-p.z, p.x) + glm::pi<float>();
 
     u = phi / (2.0f * glm::pi<float>());
     v = theta / glm::pi<float>();

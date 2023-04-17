@@ -3,7 +3,6 @@
 #include "config.h"
 #include "events.h"
 #include "image.h"
-#include "postprocessing.h"
 #include "scenes/test_scene.h"
 #include "scenes/planets.h"
 #include "utils.h"
@@ -17,11 +16,12 @@
 #include <SDL2/SDL_image.h>
 // #include <omp.h>
 
-#include <glm/gtx/norm.hpp>
-
 
 namespace Raytracer
 {
+
+
+using namespace std::placeholders;
 
 
 Window::Window() noexcept
@@ -41,6 +41,9 @@ Window::Window() noexcept
 
     // Set SDL render quality to maximum.
     SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "best");
+
+    // Capture the mouse.
+    SDL_SetRelativeMouseMode(SDL_TRUE);
     
     // Create window and renderer.
     m_window = SDL_CreateWindow(
@@ -62,25 +65,15 @@ Window::Window() noexcept
         SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_STREAMING,
         VIEWPORT_WIDTH, VIEWPORT_HEIGHT
     );
+    if (!m_buffer)
+        fatal("Failed to create SDL2 streaming texture buffer!");
 
     // Set logging decimal place format.
     std::cout << std::fixed << std::setprecision(3);
 
     // Bind events.
-    // g_eventMgr.subscribe(Event::CAMERA_TRANSLATE, [this](glm::vec3 dir, float dt) {
-    //     m_frameIndex = 1;
-    //     m_accumulated.reset();
-    // });
-    g_eventMgr.subscribe<Events::CameraTranslate>([this](const Events::CameraTranslate& event) {
-        m_frameIndex = 1;
-        m_accumulated.reset();
-    });
-
-    g_eventMgr.subscribe<Events::Screenshot>([this](const Events::Screenshot& event) {
-        screenshot(event.path);
-    });
-
-    // g_eventMgr.subscribe<Events::Screenshot>(std::bind(&Window::screenshot, this, _1));
+    g_eventMgr.subscribe<Events::CameraTranslate>(std::bind(&Window::onCameraTranslate, this, _1));
+    g_eventMgr.subscribe<Events::Screenshot>(std::bind(&Window::onScreenshot, this, _1));
 }
 
 
@@ -115,9 +108,9 @@ void Window::render()
 
     // Loop over each pixel
     // #pragma omp parallel for num_threads(10)
-    for (int y = 0; y < VIEWPORT_HEIGHT; ++y)
+    for (size_t y = 0; y < VIEWPORT_HEIGHT; ++y)
     {
-        for (int x = 0; x < VIEWPORT_WIDTH; ++x)
+        for (size_t x = 0; x < VIEWPORT_WIDTH; ++x)
         {
             // Ray pointing from camera origin to screen coordinates.
             Ray cameraRay = m_camera.getRay(x, y);
@@ -144,12 +137,12 @@ void Window::display()
     SDL_LockTexture(m_buffer, NULL, &pixels, &pitch);
 
     // loop over each pixel
-    for (int y = 0; y < VIEWPORT_HEIGHT; ++y)
+    for (size_t y = 0; y < VIEWPORT_HEIGHT; ++y)
     {
         // pointer to pixel in SDL texture
         uint8_t* base = static_cast<uint8_t*>(pixels) + y * pitch;
 
-        for (int x = 0; x < VIEWPORT_WIDTH; ++x)
+        for (size_t x = 0; x < VIEWPORT_WIDTH; ++x)
         {
             // map [0, 1) to [0, 255]
             glm::vec3 colour = m_accumulated.get(x, y) * (1.0f / m_frameIndex);
@@ -200,20 +193,22 @@ void Window::handleEvents()
 
 void Window::update()
 {
+    uint64_t start = SDL_GetPerformanceCounter();
+    
+    // calculate time since last frame
+    static auto m_oldTime = std::chrono::high_resolution_clock::now();
     auto newTime = std::chrono::high_resolution_clock::now();
     float dt = (newTime - m_oldTime).count() * 1e-9; // ns to s
     m_oldTime = newTime;
 
+    // direction of travel of camera
     glm::vec3 dir{0.0f};
 
     if (m_keyboard[SDLK_ESCAPE])
         quit();
 
     if (m_keyboard[SDLK_p])
-    {
         g_eventMgr.fire(Events::Screenshot{"out.png"});
-        quit();
-    }
 
     if (m_keyboard[SDLK_w])       dir += DIR_FRONT;
     if (m_keyboard[SDLK_s])       dir += DIR_BACK;
@@ -223,11 +218,18 @@ void Window::update()
     if (m_keyboard[SDLK_LSHIFT])  dir += DIR_DOWN;
     
     if (dir != glm::vec3{0.0f})
-        g_eventMgr.fire(Events::CameraTranslate{dir, dt});
+        g_eventMgr.fire(Events::CameraTranslate{glm::normalize(dir), dt});
+
+    g_eventMgr.fire(Events::Update{});
+
+    uint64_t _end = SDL_GetPerformanceCounter();
+
+    float t = (_end - start) / static_cast<float>(SDL_GetPerformanceFrequency());
+    std::cout << "update: " << t * 1000.0f << "ms / ";
 }
 
 
-void Window::screenshot(const std::string& path)
+void Window::onScreenshot(const Events::Screenshot& event)
 {
     // create surface
     SDL_Surface *screenshot = SDL_CreateRGBSurface(
@@ -245,8 +247,17 @@ void Window::screenshot(const std::string& path)
     if (SDL_MUSTLOCK(screenshot)) SDL_UnlockSurface(screenshot);
 
     // save image
-    IMG_SavePNG(screenshot, path.c_str());
+    IMG_SavePNG(screenshot, event.path.c_str());
     SDL_FreeSurface(screenshot);
+
+    quit();
+}
+
+
+void Window::onCameraTranslate(const Events::CameraTranslate& event)
+{
+    m_frameIndex = 1;
+    m_accumulated.reset();
 }
 
 
